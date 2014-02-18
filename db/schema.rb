@@ -11,10 +11,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140217092700) do
+ActiveRecord::Schema.define(version: 20140217192918) do
 
   create_table "catalog_shops", force: true do |t|
     t.string   "title"
+    t.string   "url"
     t.integer  "shop_id"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -25,9 +26,12 @@ ActiveRecord::Schema.define(version: 20140217092700) do
   create_table "ext_props", force: true do |t|
     t.string   "title"
     t.string   "value"
+    t.integer  "product_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "ext_props", ["product_id"], name: "index_ext_props_on_product_id", using: :btree
 
   create_table "photos", force: true do |t|
     t.string   "url"
@@ -69,8 +73,8 @@ ActiveRecord::Schema.define(version: 20140217092700) do
 
   create_table "shops", force: true do |t|
     t.string   "title"
-    t.string   "url"
     t.string   "xpath"
+    t.string   "url"
     t.string   "host"
     t.datetime "created_at"
     t.datetime "updated_at"

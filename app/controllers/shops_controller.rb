@@ -1,4 +1,4 @@
-class ShopController < ApplicationController
+class ShopsController < ApplicationController
   def index
     @shop=Shop.all
   end
@@ -38,6 +38,12 @@ class ShopController < ApplicationController
     @shop=Shop.find(params[:id])
     @shop.destroy
     redirect_to shops_path
+  end
+
+
+  def pars
+    @parser=Parser.new
+    @parser.init(params[:id])
   end
 
   private

@@ -1,0 +1,21 @@
+<p>
+  <strong>Название:</strong>
+  <%= @shop.title %>
+</p>
+
+<p>
+  <strong>URL:</strong>
+  <%= @shop.url %>
+</p>
+<p>
+  <strong>Xpath:</strong>
+  <%= @shop.xpath %>
+</p>
+<p>
+  <strong>Host:</strong>
+  <%= @shop.host %>
+</p>
+
+
+<%= link_to 'Назад к списку сайтов', shops_path %>
+| <%= link_to 'Редактировать', edit_shop_path(@shop) %>

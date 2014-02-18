@@ -1,0 +1,21 @@
+<h1>Список сайтов</h1>
+<%= link_to 'Добавить сайт', new_shop_path %>
+<table>
+  <tr>
+    <th>Название</th>
+    <th>Url</th>
+    <th>Xpath</th>
+    <th>Host</th>
+  </tr>
+
+  <% @shop.each do |shop| %>
+      <tr>
+        <td><%= link_to shop.title, shop %></td>
+        <td><%= shop.url %></td>
+        <td><%= shop.xpath %></td>
+        <td><%= shop.host %></td>
+        <td><%= link_to 'Редактировать', edit_shop_path(shop) %></td>
+        <td><%= button_to 'Парсинг', pars_shop_path(shop)  %></td>
+      </tr>
+  <% end %>
+</table>
