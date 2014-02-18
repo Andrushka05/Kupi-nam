@@ -1,5 +1,6 @@
 KupiNam::Application.routes.draw do
 
+  get "catalog_shops/index"
   get "parsings/index"
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
@@ -18,9 +19,10 @@ KupiNam::Application.routes.draw do
   #   resources :products
 
   # Example resource route with options:
-     resources :shops do
+     resources :parsings do
        member do
-         post 'pars'
+         post 'get_catalogs'
+         post 'get_goods'
        end
   #
   #     collection do

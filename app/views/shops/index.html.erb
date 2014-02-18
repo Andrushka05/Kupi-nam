@@ -15,7 +15,8 @@
         <td><%= shop.xpath %></td>
         <td><%= shop.host %></td>
         <td><%= link_to 'Редактировать', edit_shop_path(shop) %></td>
-        <td><%= button_to 'Парсинг', pars_shop_path(shop)  %></td>
+        <td><%= button_to 'Обновить каталог', get_catalogs_parsing_path(shop)  %></td>
+        <td><%= button_to 'Парсинг', get_goods_parsing_path(shop)  %></td>
       </tr>
   <% end %>
 </table>

@@ -13,8 +13,9 @@ class ShopsController < ApplicationController
 
   def create
     @shop=Shop.new(shop_params)
-
     if @shop.save
+      @parser=Parser.new
+      @parser.get_catalogs(params[:id])
       redirect_to @shop
     else
       render 'new'
@@ -38,12 +39,6 @@ class ShopsController < ApplicationController
     @shop=Shop.find(params[:id])
     @shop.destroy
     redirect_to shops_path
-  end
-
-
-  def pars
-    @parser=Parser.new
-    @parser.init(params[:id])
   end
 
   private

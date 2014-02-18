@@ -1,0 +1,2 @@
+module CatalogShopsHelper
+end
