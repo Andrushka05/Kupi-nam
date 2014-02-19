@@ -33,15 +33,19 @@ class Parser
       #get full info goods
       links.each{  |link|
         html=Nokogiri::HTML(open(link))
-        @pr=Product.find_by url:link
-        @pr.nil? ? @goods=@shop.products.new : @goods=@pr
+        @goods=@shop.products.where(url:link).first_or_create
+        if @goods.catalog_shop_id.nil?
+          @goods.catalog_shop_id=catalog.id
+        end
+        #@pr.nil? ? @goods=@shop.products.new : @goods=@pr
 
         @goods.title=html.xpath("//div[contains(concat(' ', @class, ' '), 'product_description_title')]").collect {|node| node.text.strip}.first
         @goods.article=html.xpath("//span[contains(concat(' ', @class, ' '), 'article')]").collect {|node| node.text.strip}.first
         #price
-        @price=Price.new
-        @price.cost= html.xpath("//div[contains(concat(' ', @class, ' '), 'product_description_row')]/span").collect {|node| node.text.strip}.first
-        @goods.prices.where(@price).first_or_create
+        @price=Price.where(:product_id => @goods.id).first_or_create
+        @price.cost= html.xpath("//div[contains(concat(' ', @class, ' '), 'product_description_row')]/span").collect {|node| node.text.strip.sub('-','.').to_f}.first
+        @price.save
+        #@goods.prices.where(@price).first_or_create
         desc=html.xpath("//div[contains(concat(' ', @class, ' '), 'product_description_row')]/p").collect {|node| node.text.strip}
         @goods.description=desc.join('\r\n')
         cat=html.xpath("//div[contains(concat(' ', @class, ' '), 'bread_crumb_big')]/a").collect {|node| unless node.text.include? 'Каталог'
@@ -52,15 +56,14 @@ class Parser
                                                                                                            node.text.strip
                                                                                                     end }
         @goods.size=size.select{|x| x!=nil}.join('; ')
-        images=html.xpath("//a[contains(concat(' ', @class, ' '), 'cloud-zoom')]").collect{|node| unless node.attr('href').include? @shop.host
+        images=html.xpath("//a[contains(concat(' ', @class, ' '), 'cloud-zoom')]").collect{|node| if node.nil? || node.attr('href').nil?
+                                                                                                    nil
+                                                                                                  elsif !(node.attr('href').include? @shop.host)
                                                                                                     @shop.host+node.attr('href')
                                                                                                   else
                                                                                                     node.attr('href')
                                                                                                   end }
-        images.each{|x| @photo=Photo.new
-          @photo.url=x
-          @goods.photos.where(@photo).first_or_create
-        }
+        images.select{|x| x!=nil}.each{ |x| Photo.where(:product_id => @goods.id, :url => x).first_or_create }
 
         @goods.color=''
         @goods.save

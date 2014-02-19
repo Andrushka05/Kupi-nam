@@ -11,7 +11,7 @@ class CreateProducts < ActiveRecord::Migration
       t.string :main_categories
       t.string :article2
       t.string :url
-      t.references :shops, index: true
+      t.references :shop, index: true
       t.references :catalog_shop, index: true
 
       t.timestamps

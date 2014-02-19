@@ -29,7 +29,12 @@ KupiNam::Application.routes.draw do
   #       get 'sold'
   #     end
      end
-
+    resources :save do
+      member do
+        post 'save_xls'
+        post 'save_xlsx'
+      end
+    end
   # Example resource route with sub-resources:
      #resources :shops do
        #resources :products
