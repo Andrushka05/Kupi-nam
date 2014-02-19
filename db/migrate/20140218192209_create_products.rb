@@ -6,7 +6,7 @@ class CreateProducts < ActiveRecord::Migration
       t.string :article
       t.string :size
       t.string :category_path
-      t.string :description
+      t.text :description
       t.string :state
       t.string :main_categories
       t.string :article2

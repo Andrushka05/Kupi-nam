@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="DataSourceManagerImpl" format="xml" hash="3172371391">
+  <component name="DataSourceManagerImpl" format="xml" hash="2056512910">
     <data-source source="LOCAL" name="kupi_name" uuid="cf355945-0150-4c2d-9243-e5cabd3ca7f1">
       <driver-ref>mysql</driver-ref>
       <synchronize>true</synchronize>
@@ -19,7 +19,7 @@
         </library>
       </libraries>
     </data-source>
-    <data-source source="LOCAL" name="Rails Kupi-nam: development" uuid="ee9e67b1-16c3-4512-83a6-b470d20e6686">
+    <data-source source="LOCAL" name="Rails Kupi-nam: development" uuid="67755599-062a-4d40-b364-bf7a86f57485">
       <driver-ref>mysql</driver-ref>
       <jdbc-driver>com.mysql.jdbc.Driver</jdbc-driver>
       <jdbc-url>jdbc:mysql://127.0.0.1/Kupi_name</jdbc-url>
@@ -27,7 +27,7 @@
       <user-password>dfcbdfcedfc7dfc3dfc4</user-password>
       <libraries />
     </data-source>
-    <data-source source="LOCAL" name="Rails Kupi-nam: test" uuid="53e79d47-a349-43b6-99d3-ec3682a9b418">
+    <data-source source="LOCAL" name="Rails Kupi-nam: test" uuid="bd7f8721-8ab8-4fd0-86ad-3ff3072eedc8">
       <driver-ref>mysql</driver-ref>
       <jdbc-driver>com.mysql.jdbc.Driver</jdbc-driver>
       <jdbc-url>jdbc:mysql://127.0.0.1/Kupi-nam_test</jdbc-url>
@@ -35,7 +35,7 @@
       <user-password>dfcbdfcedfc7dfc3dfc4</user-password>
       <libraries />
     </data-source>
-    <data-source source="LOCAL" name="Rails Kupi-nam: production" uuid="af505714-b5e1-4c8d-97fb-23490d3d16b1">
+    <data-source source="LOCAL" name="Rails Kupi-nam: production" uuid="9896b524-b79c-46cc-b2a5-5f4eb73fc0ba">
       <driver-ref>mysql</driver-ref>
       <jdbc-driver>com.mysql.jdbc.Driver</jdbc-driver>
       <jdbc-url>jdbc:mysql://127.0.0.1/Kupi-nam_production</jdbc-url>

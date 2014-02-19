@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140217192918) do
+ActiveRecord::Schema.define(version: 20140218192209) do
 
   create_table "catalog_shops", force: true do |t|
     t.string   "title"
@@ -26,9 +26,12 @@ ActiveRecord::Schema.define(version: 20140217192918) do
   create_table "ext_props", force: true do |t|
     t.string   "title"
     t.string   "value"
+    t.integer  "product_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "ext_props", ["product_id"], name: "index_ext_props_on_product_id", using: :btree
 
   create_table "photos", force: true do |t|
     t.string   "url"
@@ -54,19 +57,19 @@ ActiveRecord::Schema.define(version: 20140217192918) do
     t.string   "article"
     t.string   "size"
     t.string   "category_path"
-    t.string   "description"
+    t.text     "description"
     t.string   "state"
     t.string   "main_categories"
     t.string   "article2"
     t.string   "url"
-    t.integer  "shop_id"
+    t.integer  "shops_id"
     t.integer  "catalog_shop_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   add_index "products", ["catalog_shop_id"], name: "index_products_on_catalog_shop_id", using: :btree
-  add_index "products", ["shop_id"], name: "index_products_on_shop_id", using: :btree
+  add_index "products", ["shops_id"], name: "index_products_on_shops_id", using: :btree
 
   create_table "shops", force: true do |t|
     t.string   "title"
