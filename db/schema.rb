@@ -26,9 +26,12 @@ ActiveRecord::Schema.define(version: 20140219050117) do
   create_table "ext_props", force: true do |t|
     t.string   "title"
     t.string   "value"
+    t.integer  "product_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "ext_props", ["product_id"], name: "index_ext_props_on_product_id", using: :btree
 
   create_table "photos", force: true do |t|
     t.string   "url"
