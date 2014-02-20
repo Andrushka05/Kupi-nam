@@ -776,6 +776,7 @@
       <column name="catalog_shop_id" sqlType="INT" length="10" precision="0" nullable="true" jdbcType="4"/>
       <column name="created_at" sqlType="DATETIME" length="19" precision="0" nullable="true" jdbcType="93"/>
       <column name="updated_at" sqlType="DATETIME" length="19" precision="0" nullable="true" jdbcType="93"/>
+      <column name="client_prices" sqlType="VARCHAR" length="255" precision="0" nullable="false" jdbcType="12"/>
       <primary-key name="PRIMARY" columns="id"/>
       <index name="index_products_on_catalog_shop_id" unique="false" columns="catalog_shop_id"/>
       <index name="index_products_on_shop_id" unique="false" columns="shop_id"/>

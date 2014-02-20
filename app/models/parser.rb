@@ -43,11 +43,11 @@ class Parser
         @goods.article=html.xpath("//span[contains(concat(' ', @class, ' '), 'article')]").collect {|node| node.text.strip}.first
         #price
         @price=Price.where(:product_id => @goods.id).first_or_create
-        @price.cost= html.xpath("//div[contains(concat(' ', @class, ' '), 'product_description_row')]/span").collect {|node| node.text.strip.sub('-','.').to_f}.first
+        @price.cost= html.xpath("//div[contains(concat(' ', @class, ' '), 'product_description_row')]/span").select{|x| x.text.include? "руб"}.collect {|node| node.text.strip.sub('-','.').to_f}.first
         @price.save
         #@goods.prices.where(@price).first_or_create
         desc=html.xpath("//div[contains(concat(' ', @class, ' '), 'product_description_row')]/p").collect {|node| node.text.strip}
-        @goods.description=desc.join('\r\n')
+        @goods.description=desc.select{|x| !x.nil? && x.length>0}.join('\n')
         cat=html.xpath("//div[contains(concat(' ', @class, ' '), 'bread_crumb_big')]/a").collect {|node| unless node.text.include? 'Каталог'
                                                                                                            node.text.strip
                                                                                                          end }
