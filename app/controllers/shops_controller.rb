@@ -15,7 +15,6 @@ class ShopsController < ApplicationController
     @shop=Shop.new(shop_params)
     if @shop.save
       @parser=Parser.new
-      @parser.get_catalogs(params[:id])
       redirect_to @shop
     else
       render 'new'

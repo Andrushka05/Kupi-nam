@@ -1,3 +1,30 @@
+<style>
+    .tableL {
+        margin: 0 5px;
+        float: left;
+    }
+
+    .cellsBlock {
+
+        display: table;
+        text-align: center;
+    }
+
+    .cellSmall, .cellMiddle, .cellMax{
+        display: table-cell !important;
+        display: inline; /* для IE */
+        border: 1px solid black;
+    }
+    .cellMiddle {
+        width: 100px;
+    }
+    .cellMax {
+        width: 200px;
+    }
+    .cellSmall {
+        width: 60px;
+    }
+</style>
 <p>
   <strong>Название:</strong>
   <%= @shop.title %>
@@ -15,7 +42,34 @@
   <strong>Host:</strong>
   <%= @shop.host %>
 </p>
-
-
+<div class="tableL">
+  <div class="cellsBlock">
+    <div class="cellMax">Каталог</div>
+    <div class="cellMax">Название</div>
+    <div class="cellSmall">Артикул</div>
+    <div class="cellSmall">Цена</div>
+    <div class="cellSmall">Цвет</div>
+    <div class="cellMiddle">Размер</div>
+    <div class="cellMax">Описание</div>
+    <div class="cellSmall">URL</div>
+    <div class="cellSmall">Фото</div>
+  </div>
+<% @shop.products.each do |pr| %>
+      <div class="cellsBlock">
+        <div class="cellMax"><%= pr.category_path %></div>
+        <div class="cellMax"><%= pr.title %></div>
+        <div class="cellSmall"><%= pr.article %></div>
+        <div class="cellSmall"><%= Price.find(pr.id).cost %></div>
+        <div class="cellSmall"><%= pr.color %></div>
+        <div class="cellMiddle"><%= pr.size %></div>
+        <div class="cellMax"><%= pr.description %></div>
+        <div class="cellSmall"><a href="<%= pr.url %>">URL</a></div>
+        <% if !Photo.find(pr.id).nil? %>
+            <% Photo.where(product_id: pr.id).each_with_index{|x,i| %>
+            <div class="cellSmall"><a href="<%= x.url%>">ФОТО <%= i+1%></a></div>
+        <% } end %>
+      </div>
+<% end %>
+  </div>
 <%= link_to 'Назад к списку сайтов', shops_path %>
 | <%= link_to 'Редактировать', edit_shop_path(@shop) %>

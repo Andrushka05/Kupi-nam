@@ -14,9 +14,11 @@ class ParsingsController < ApplicationController
     @parser=Parser.new
     @sh=Shop.find(params[:id])
     if @sh.title.include? 'Rekantino'
-        @parser.get_rekantino(params[:id])
+      @parser.get_rekantino(params[:id])
+    elsif @sh.title.include? 'Lala-style'
+      @parser.get_lala_style(params[:id])
     end
-    redirect_to shops_path
+    redirect_to shop_path
   end
 
 end
