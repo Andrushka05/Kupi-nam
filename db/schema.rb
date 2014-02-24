@@ -64,7 +64,6 @@ ActiveRecord::Schema.define(version: 20140219050117) do
     t.integer  "catalog_shop_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "client_prices",   null: false
   end
 
   add_index "products", ["catalog_shop_id"], name: "index_products_on_catalog_shop_id", using: :btree

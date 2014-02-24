@@ -17,6 +17,8 @@ class ParsingsController < ApplicationController
       @parser.get_rekantino(params[:id])
     elsif @sh.title.include? 'Lala-style'
       @parser.get_lala_style(params[:id])
+    elsif @sh.title.include? 'Arabella'
+      @parser.get_arabella(params[:id])
     end
     redirect_to shop_path
   end

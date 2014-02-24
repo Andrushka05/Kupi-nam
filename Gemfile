@@ -51,7 +51,7 @@ group :production do
   gem 'rails_12factor', '0.0.2'
 end
 gem 'nokogiri'
-
+gem 'mechanize'
 gem 'writeexcel'
 
 # Use ActiveModel has_secure_password

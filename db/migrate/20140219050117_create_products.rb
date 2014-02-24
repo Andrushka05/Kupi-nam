@@ -9,7 +9,7 @@ class CreateProducts < ActiveRecord::Migration
       t.text :description
       t.string :state
       t.string :main_categories
-      t.string :client_price
+      t.string :client_prices
       t.string :article2
       t.string :url
       t.references :shop, index: true

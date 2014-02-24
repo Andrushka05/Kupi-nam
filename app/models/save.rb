@@ -131,6 +131,7 @@ class Save
 
     # write to file
     workbook.close
+    return @shop.title+'.xls'
   end
 
   def xlsx(shop_id)
