@@ -59,14 +59,17 @@
         <div class="cellMax"><%= pr.category_path %></div>
         <div class="cellMax"><%= pr.title %></div>
         <div class="cellSmall"><%= pr.article %></div>
-        <div class="cellSmall"><%= Price.find(pr.id).cost %></div>
+        <% unless Price.where(product_id: pr.id).nil? %>
+            <% Price.where(product_id: pr.id).map{|x| %>
+                <div class="cellSmall"><%= x.cost %></div>
+        <% } end %>
         <div class="cellSmall"><%= pr.color %></div>
         <div class="cellMiddle"><%= pr.size %></div>
         <div class="cellMax"><%= pr.description %></div>
         <div class="cellSmall"><a href="<%= pr.url %>">URL</a></div>
-        <% if !Photo.find(pr.id).nil? %>
+        <% if !Photo.where(product_id: pr.id).nil? %>
             <% Photo.where(product_id: pr.id).each_with_index{|x,i| %>
-            <div class="cellSmall"><a href="<%= x.url%>">ФОТО <%= i+1%></a></div>
+                <div class="cellSmall"><a href="<%= x.url%>">ФОТО <%= i+1%></a></div>
         <% } end %>
       </div>
 <% end %>

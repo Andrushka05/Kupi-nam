@@ -76,20 +76,26 @@ class Parser
   def get_lala_style(id)
     @shop=Shop.find(id)
     @shop.catalog_shops.map{|catalog|
-      page = Nokogiri::HTML(open(catalog.url))
+      page = Nokogiri::HTML(open(catalog.url).read)
       page.remove_namespaces!
       catalog_title=catalog.title
       #link to goods
       links=get_links(page,"//a[contains(concat(' ', @class, ' '), 'prod_more')]",@shop.host)
       #pages
-      pages=page.xpath("//div[contains(concat(' ', @class, ' '), 'shop2-pageist')]/a").map{ |link|
-        html=Nokogiri::HTML(open(link))
-        links << get_links(html,"//a[contains(concat(' ', @class, ' '), 'prod_more')]",@shop.host)
+      page.xpath("//div[contains(concat(' ', @class, ' '), 'shop2-pageist')]/a").map{ |link|
+        if link.to_s.include? 'href'
+          l=link['href']
+          l=@shop.host+l unless l.include? @shop.host
+          html=Nokogiri::HTML(open(l).read)
+          get_links(html,"//a[contains(concat(' ', @class, ' '), 'prod_more')]",@shop.host).map{|x|
+            links << x
+          }
+        end
       }
       links=links.compact.uniq
       #get full info goods
       links.each{  |link|
-        html=Nokogiri::HTML(open(link))
+        html=Nokogiri::HTML(open(link).read)
         @goods=@shop.products.where(url:link).first_or_create
         if @goods.catalog_shop_id.nil?
           @goods.catalog_shop_id=catalog.id
@@ -97,50 +103,61 @@ class Parser
 
         @goods.title=get_node_text(html,"//div[contains(concat(' ', @class, ' '), 'product-right-bar')]/h1")
         code=get_node_text(html,"//div[contains(concat(' ', @class, ' '), 'product-code')]/span")
-        @goods.article=code.slice(0,code.rindex("цвет:")).sub("Артикул:","").strip
-        @goods.color=code.slice(code.rindex("цвет:")+5,code.length-code.rindex("цвет:")-5).strip
+        @goods.article=code.strip
+        code=get_node_text(html,"//div[contains(concat(' ', @class, ' '), 'product-code')]")
+        @goods.color=code.slice(code.rindex("цвет:")+5,code.length-code.rindex("цвет:")-5).strip  if code.include? "цвет:"
         #price
         @price=Price.where(:product_id => @goods.id).first_or_create
         @price.cost= html.xpath("//div[contains(concat(' ', @class, ' '), 'product-accessory-prise')][1]").select{|x| x.text.include? "руб"}.collect {|node| node.text.gsub(/[^\d]/, '').to_f}.first
         @price.save
         #@goods.prices.where(@price).first_or_create
-        desc=html.xpath("//div[contains(concat(' ', @id, ' '), 'tabs-1')]/p").collect {|node| node.text.strip}
-        @goods.description=desc.select{|x| !x.nil? && x.length>0}.join('\n')
+        desc=html.xpath("//div[contains(concat(' ', @id, ' '), 'tabs-1')]/p").collect {|node| node.text.strip}.join('\n')
+
         @goods.category_path=catalog_title
-        size=desc.slice(desc.index("Размерный ряд модели")+21,desc.index("Цвета:")-desc.index("Размерный ряд модели")-21).strip
-        desc.slice!(0,"Размерный ряд модели")
-        @goods.size=size.compact.join('; ')
-        images=html.xpath("//a[contains(concat(' ', @class, ' '), 'highslide')]").compact.collect{|node| if node.nil? || node.attr('href').nil?
+        if !desc.index("Размерный ряд модели").nil? && !desc.index("Цвета").nil?
+          size=desc[desc.index("Размерный ряд модели")+21,desc.index("Цвета")-desc.index("Размерный ряд модели")-21].strip
+          desc=desc[0,desc.index("Размерный ряд модели")]
+          @goods.size=size.gsub(",","; ").gsub(".","")
+        elsif !desc.index("Размерный ряд модели").nil?
+          size=desc[desc.index("Размерный ряд модели")+21,desc.length-desc.index("Размерный ряд модели")-21].strip
+          desc=desc[0,desc.index("Размерный ряд модели")]
+          @goods.size=size.gsub(",","; ").gsub(".","")
+        end
+        @goods.description=desc
+        images=html.xpath("//a[contains(concat(' ', @class, ' '), 'highslide')]").collect{|node| if node.nil? || node.attr('href').nil?
                                                                                                     nil
                                                                                                   elsif !(node.attr('href').include? @shop.host)
                                                                                                     @shop.host+node.attr('href')
                                                                                                   else
                                                                                                     node.attr('href')
                                                                                                   end }
-        images2=html.xpath("//div[contains(concat(' ', @class, ' '), 'product-thumbnails-wrap')]/ul/li/img").compact.collect{|node|
+        html.xpath("//div[contains(concat(' ', @class, ' '), 'product-thumbnails-wrap')]/ul/li/img").collect{|node|
           str=node.attr('onclick')
-          str.slice!(str.index("this,")+5,str.index(",",str.index("this,")+5)-str.index("this,")-5).gsub!("'","").strip!
+          str=str[str.index("this,")+5,str.index(",",str.index("this,")+5)-str.index("this,")-5].gsub!("'","").strip!
           if !str.include? @shop.host
-            @shop.host+str
+            images << @shop.host+str
           else
-            str
+            images << str
           end
         }
-        images << images2
-        images.uniq.compact.map{ |x| Photo.where(:product_id => @goods.id, :url => x).first_or_create }
+
+        images.uniq!
+        images.map{ |x|
+          Photo.where(:product_id => @goods.id, :url => x).first_or_create if x.length>0
+        }
         @goods.save
 
-        links2=html.xpath("//div[contains(concat(' ', @class, ' '), 'product-accessory-name')]/a").compact.select{|x|
+        links2=html.xpath("//div[contains(concat(' ', @class, ' '), 'product-accessory-name')]/a").map{|x|
           unless x.attr('href').equal? link
             unless x.attr('href').include? @shop.host
-              @shop.host+node.attr('href')
+              @shop.host+x.attr('href')
             else
-              node.attr('href')
+              x.attr('href')
             end
           end
-        }.uniq
+        }
         links2.map{|l|
-          html2=Nokogiri::HTML(open(l))
+          html2=Nokogiri::HTML(open(l).read)
           @goods2=@shop.products.where(url:l).first_or_create
           if @goods2.catalog_shop_id.nil?
             @goods2.catalog_shop_id=@goods.catalog_shop_id
@@ -148,39 +165,53 @@ class Parser
 
           @goods2.title=get_node_text(html2,"//div[contains(concat(' ', @class, ' '), 'product-right-bar')]/h1")
           code2=get_node_text(html2,"//div[contains(concat(' ', @class, ' '), 'product-code')]/span")
-          @goods2.article=code2.slice(0,code2.index("цвет:")).sub("Артикул:","").strip
-          @goods2.color=code2.slice(code2.index("цвет:")+5,code2.length-code2.index("цвет:")-5).strip
+          @goods2.article=code2.strip
+          code2=get_node_text(html2,"//div[contains(concat(' ', @class, ' '), 'product-code')]")
+          @goods2.color=code2.slice(code2.index("цвет:")+5,code2.length-code2.index("цвет:")-5).strip if code2.include? "цвет:"
           #price
-          @price2=Price.where(:product_id => @goods.id).first_or_create
-          @price2.cost= html2.xpath("//div[contains(concat(' ', @class, ' '), 'product-accessory-prise')][1]").select{|x| x.text.include? "руб"}.collect {|node| node.text.gsub(/[^\d]/, '').to_f}.first
+          @price2=Price.where(:product_id => @goods2.id).first_or_create
+          @price2.cost= html2.xpath("//div[contains(concat(' ', @class, ' '), 'product-accessory-prise')][1]").select{|x|
+            x.text.include? "руб"}.collect {|node| node.text.gsub(/[^\d]/, '').to_f
+          }.first
+          if @price2.cost.nil?
+            @price2.cost=0
+          end
           @price2.save
           #@goods.prices.where(@price).first_or_create
-          desc2=html2.xpath("//div[contains(concat(' ', @id, ' '), 'tabs-1')]/p").collect {|node| node.text.strip}
-          @goods2.description=desc2.select{|x| !x.nil? && x.length>0}.join('\n')
+          desc2=html2.xpath("//div[contains(concat(' ', @id, ' '), 'tabs-1')]/p").collect {|node| node.text.strip}.join('\n')
+
           @goods2.category_path=catalog_title
-          size2=desc.slice(desc2.index("Размерный ряд модели")+21,desc2.index("Цвета:")-desc2.index("Размерный ряд модели")-21).strip
-          desc2.slice!(0,"Размерный ряд модели")
-          @goods2.size=size2.compact.join('; ')
-          images3=html.xpath("//a[contains(concat(' ', @class, ' '), 'highslide')]").compact.collect{|node| if node.nil? || node.attr('href').nil?
+          if !desc2.index("Размерный ряд модели").nil? && !desc2.index("Цвета").nil?
+            size2=desc2[desc2.index("Размерный ряд модели")+21,desc2.index("Цвета")-desc2.index("Размерный ряд модели")-21].strip
+            desc2=desc2[0,desc2.index("Размерный ряд модели")]
+            @goods2.size=size2.gsub(",","; ").gsub(".","")
+          elsif !desc2.index("Размерный ряд модели").nil?
+            size2=desc2[desc2.index("Размерный ряд модели")+21,desc2.length-desc2.index("Размерный ряд модели")-21].strip
+            desc2=desc2[0,desc2.index("Размерный ряд модели")]
+            @goods2.size=size2.gsub(",","; ").gsub(".","")
+          end
+          @goods2.description=desc2
+          images3=html.xpath("//a[contains(concat(' ', @class, ' '), 'highslide')]").collect{|node| if node.nil? || node.attr('href').nil?
                                                                                                              nil
                                                                                                            elsif !(node.attr('href').include? @shop.host)
                                                                                                              @shop.host+node.attr('href')
                                                                                                            else
                                                                                                              node.attr('href')
                                                                                                            end }
-          images4=html.xpath("//div[contains(concat(' ', @class, ' '), 'product-thumbnails-wrap')]/ul/li/img").compact.collect{|node|
+          html2.xpath("//div[contains(concat(' ', @class, ' '), 'product-thumbnails-wrap')]/ul/li/img").collect{|node|
             str=node.attr('onclick')
-            str.slice!(str.index("this,")+5,str.index(",",str.index("this,")+5)-str.index("this,")-5).gsub!("'","").strip!
+            str=str[str.index("this,")+5,str.index(",",str.index("this,")+5)-str.index("this,")-5].gsub!("'","").strip!
             if !str.include? @shop.host
-              @shop.host+str
+              images3 << @shop.host+str
             else
-              str
+              images3 << str
             end
           }
-          images3 << images4
-          images3.uniq.compact.map{ |x| Photo.where(:product_id => @goods.id, :url => x).first_or_create }
+          images3.uniq!
+          images3.map{ |x| Photo.where(:product_id => @goods.id, :url => x).first_or_create if x.length>0 }
           @goods2.save
         }
+        sleep(1)
       }
     }
   end
@@ -206,6 +237,6 @@ class Parser
   private
   # @param [Nokogiri] html
   def get_node_text(html,xpath)
-    return html.xpath(xpath).compact!.collect! {|node| node.text.strip}.first
+    return html.xpath(xpath).collect {|node| node.text.strip unless node.text.nil? }.first
   end
 end
