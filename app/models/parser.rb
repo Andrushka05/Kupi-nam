@@ -251,38 +251,44 @@ class Parser
     mechan = Mechanize.new { |agent|
       # Flickr refreshes after login
       agent.follow_meta_refresh = true
+      #agent.page.encoding='WINDOWS-1251'
     }
-    encoding =  'WINDOWS-1251' # 'UTF-8'
-    first=true;
+    encoding = 'WINDOWS-1251'  # 'UTF-8'
+
+    mechan.get(@shop.url){|p|
+      log = p.form_with(:id => 'login_block__form'){ |form|
+        form.email='Krasnoselskova@rambler.ru'
+        form.password='123456'
+      }.submit
+    }
+    mechan.get(@shop.url)
     @shop.catalog_shops.map{|catalog|
       mechan.get(catalog.url){|p|
-        log=p
-        #if first
-          #log = p.form_with(:id => 'login_block__form'){ |form|
-            #form.email='Krasnoselskova@rambler.ru'
-            #form.password='123456'
-          #}.submit
-          #first=false;
-        #end
-      page = Nokogiri::HTML(log.body,nil,encoding) #+"?characteristics%5B%5D=1290270&page_size=100"
+
+      page = Nokogiri::HTML(p.body,nil,encoding) #+"?characteristics%5B%5D=1290270&page_size=100"
       page.remove_namespaces!
       catalog_title=catalog.title
       #link to goods
-      links=get_links_pages_all(page,"//p[contains(concat(' ', @class, ' '), 'title')]/a","//span[contains(concat(' ', @class, ' '), 'pagination_page')]/a",@shop.host,"page=")
+      ls=[]
+      #p.parser.xpath("//p[contains(concat(' ', @class, ' '), 'title')]/a").map{|x|
+        #ls << x
+      #}
+      links=get_links_pages_all(p.parser,"//p[contains(concat(' ', @class, ' '), 'title')]/a","//span[contains(concat(' ', @class, ' '), 'pagination_page')]/a",@shop.host,"page=")
       links=links.compact.uniq
       #get full info goods
       links.each{  |link|
-        html=Nokogiri::HTML(mechan.get(link).body)
+        mechan.get(link){|pp2|
+
         @goods=@shop.products.where(url:link).first_or_create
         if @goods.catalog_shop_id.nil?
           @goods.catalog_shop_id=catalog.id
         end
 
-        @goods.title=get_node_text(html,"//table[contains(concat(' ', @class, ' '), 'prps')]/tr[1]/td[2]")
-        @goods.article=get_node_text(html,"//div[contains(concat(' ', @class, ' '), 'fl prod-info')]/h1").strip
+        @goods.title=get_node_text(pp2.parser,"//table[contains(concat(' ', @class, ' '), 'prps')]/tr[1]").gsub("Товар:","").strip
+        @goods.article=get_node_text(pp2.parser,"//div[contains(concat(' ', @class, ' '), 'fl prod-info')]/h1").strip
         @goods.color=""
         #price
-        add_prices(["//span[contains(concat(' ', @class, ' '), 'price')]","//span[contains(concat(' ', @class, ' '), 'price')]"],@goods.id,['р.'])
+        add_prices(pp2.parser,["//span[contains(concat(' ', @class, ' '), 'oldprice')]","//span[contains(concat(' ', @class, ' '), 'price')]"],@goods.id,['р.'])
         #@price=Price.where(:product_id => @goods.id).first_or_create
         #@price.cost= html.xpath("//span[contains(concat(' ', @class, ' '), 'price')]").collect {|node| node.text.gsub('р.', '').to_f}.first
         #@price.save
@@ -291,9 +297,9 @@ class Parser
           #Price.create(:product_id=>@goods.id,:cost=>price2.first.text.strip.sub('р.', '').to_f)
         #end
         #@goods.prices.where(@price).first_or_create
-        size=html.xpath("//tr[contains(concat(' ', @class, ' '), 'fg')]/td")
-        @goods.description=get_node_texts_s(html,"//table[contains(concat(' ', @class, ' '), 'prps')]/tr","\n")
-        images=get_photos(html,"//div[contains(concat(' ', @class, ' '), 'photo fl')]/a","//div[contains(concat(' ', @class, ' '), 'gallery')]/a/img")
+        size=pp2.parser.xpath("//tr[contains(concat(' ', @class, ' '), 'fg')]/td")
+        @goods.description=get_node_texts_s(pp2.parser,"//table[contains(concat(' ', @class, ' '), 'prps')]/tr","\n").gsub(/\s+/,' ')
+        images=get_photos(pp2.parser,"//div[contains(concat(' ', @class, ' '), 'photo fl')]/a","//div[contains(concat(' ', @class, ' '), 'gallery')]/a/img")
 
         images.map{ |x|
           if x.length>0
@@ -304,15 +310,17 @@ class Parser
         @goods.category_path=catalog_title
         @goods.save
       }
+      }
     }
     }
   end
 
   private
+  # @param [Nokogiri] html
 # @param [Array] xpaths
 # @param [int] product_id
   # @param [Array] replace
-  def add_prices(xpaths,product_id,replace=[])
+  def add_prices(html,xpaths,product_id,replace=[])
     @price=Price.where(:product_id => product_id)
     xpaths.map{|xpath|
       cost=html.xpath(xpath).collect {|node|
@@ -367,31 +375,35 @@ class Parser
         return links
       end
 
-      countPage=l2[l2.index(text_page)+text_page.size,l2.index(text_page)+text_page.size+3].gsub(/[^\d]/, '').to_i
-      (2..countPage).times{|i|
-        l=l2.sub(text_page+countPage,text_page+i)
+      countPage=l2[l2.index(text_page)+text_page.size,3].gsub(/[^\d]/, '').to_i
+      for i in 2..countPage
+        l=l2.gsub(text_page+countPage.to_s,text_page+i.to_s)
         l=@shop.host+l unless l.include? @shop.host
-        html2=Nokogiri::HTML(mechan.get(l).body)
-        html2.xpath(xpath_item).map{
-            |c| link=c.attr('href')
-          unless link.include? host
-            link=host+link
-          end
-          links << link
-        }
-      }
-    else
-      pages.map{ |link|
-        if link.to_s.include? 'href'
-          l=link['href']
-          l=@shop.host+l unless l.include? @shop.host
-          html2=Nokogiri::HTML(mechan.get(l).body)
-          html2.xpath(xpath_item).map{
+        mechan=Mechanize.new
+        mechan.get(l){|x|
+          x.parser.xpath(xpath_item).map{
               |c| link=c.attr('href')
             unless link.include? host
               link=host+link
             end
             links << link
+          }
+        }
+      end
+    else
+      pages.map{ |link|
+        if link.to_s.include? 'href'
+          l=link['href']
+          l=@shop.host+l unless l.include? @shop.host
+          mechan=Mechanize.new
+          mechan.get(l){|x|
+            x.parser.xpath(xpath_item).map{
+                |c| link=c.attr('href')
+            unless link.include? host
+              link=host+link
+            end
+            links << link
+            }
           }
         end
       }
@@ -453,6 +465,6 @@ class Parser
     if res.nil?
       return
     end
-    return res.collect {|node| node.text.strip unless node.text.nil? }.join(split)
+    return res.collect {|node| node.text.strip unless node.text.nil? }.join(split).strip
   end
 end
