@@ -2,8 +2,10 @@ require 'rubygems'
 require 'open-uri'
 require 'nokogiri'
 require 'mechanize'
+require 'action_view'
 
 class Parser
+  include ActionView::Helpers::SanitizeHelper
   def get_catalogs (id)
     @shop=Shop.find(id)
     page = Nokogiri::HTML(open(@shop.url))
@@ -204,20 +206,20 @@ class Parser
           if !desc2.index("Размерный ряд модели").nil? && !desc2.index("Цвет").nil?
             size2=desc2[desc2.index("Размерный ряд модели")+21,desc2.index("Цвет")-desc2.index("Размерный ряд модели")-21]
             desc2=desc2[0,desc2.index("Размерный ряд модели")]
-            if !size2.nil?
+            unless size2.nil?
               if size2.length>250
-                size2=size2[0,size2.downcase.index(@goods2.color.downcase)]
+                size2=size2[0, size2.downcase.index(@goods2.color.downcase)]
               end
-              @goods2.size=size2.gsub(",","; ").gsub(".","").strip
+              @goods2.size=size2.gsub(",", "; ").gsub(".", "").strip
             end
           elsif !desc2.index("Размерный ряд модели").nil?
             size2=desc2[desc2.index("Размерный ряд модели")+21,desc2.length-desc2.index("Размерный ряд модели")-21]
             desc2=desc2[0,desc2.index("Размерный ряд модели")]
-            if !size2.nil?
+            unless size2.nil?
               if size2.length>250
-                size2=size2[0,size2.downcase.index(@goods2.color.downcase)]
+                size2=size2[0, size2.downcase.index(@goods2.color.downcase)]
               end
-              @goods2.size=size2.gsub(",","; ").gsub(".","").strip
+              @goods2.size=size2.gsub(",", "; ").gsub(".", "").strip
             end
           end
           @goods2.description=desc2
@@ -231,7 +233,7 @@ class Parser
           html2.xpath("//div[contains(concat(' ', @class, ' '), 'product-thumbnails-wrap')]/ul/li/img").collect{|node|
             str=node.attr('onclick')
             str=str[str.index("this,")+5,str.index(",",str.index("this,")+5)-str.index("this,")-5].gsub!("'","").strip!
-            if !str.include? @shop.host
+            unless str.include? @shop.host
               images3 << @shop.host+str
             else
               images3 << str
@@ -251,6 +253,7 @@ class Parser
     mechan = Mechanize.new { |agent|
       # Flickr refreshes after login
       agent.follow_meta_refresh = true
+
       #agent.page.encoding='WINDOWS-1251'
     }
     encoding = 'WINDOWS-1251'  # 'UTF-8'
@@ -287,20 +290,12 @@ class Parser
         @goods.title=get_node_text(pp2.parser,"//table[contains(concat(' ', @class, ' '), 'prps')]/tr[1]").gsub("Товар:","").strip
         @goods.article=get_node_text(pp2.parser,"//div[contains(concat(' ', @class, ' '), 'fl prod-info')]/h1").strip
         @goods.color=""
-        #price
         add_prices(pp2.parser,["//span[contains(concat(' ', @class, ' '), 'oldprice')]","//span[contains(concat(' ', @class, ' '), 'price')]"],@goods.id,['р.'])
-        #@price=Price.where(:product_id => @goods.id).first_or_create
-        #@price.cost= html.xpath("//span[contains(concat(' ', @class, ' '), 'price')]").collect {|node| node.text.gsub('р.', '').to_f}.first
-        #@price.save
-        #price2=html.xpath("//span[contains(concat(' ', @class, ' '), 'price')]")
-        #unless price2.nil?
-          #Price.create(:product_id=>@goods.id,:cost=>price2.first.text.strip.sub('р.', '').to_f)
-        #end
-        #@goods.prices.where(@price).first_or_create
-        size=pp2.parser.xpath("//tr[contains(concat(' ', @class, ' '), 'fg')]/td")
+        size=get_node_texts_s(pp2.parser,"//tr[contains(concat(' ', @class, ' '), 'fg')]/td",[])
         @goods.description=get_node_texts_s(pp2.parser,"//table[contains(concat(' ', @class, ' '), 'prps')]/tr","\n").gsub(/\s+/,' ')
         images=get_photos(pp2.parser,"//div[contains(concat(' ', @class, ' '), 'photo fl')]/a","//div[contains(concat(' ', @class, ' '), 'gallery')]/a/img")
 
+        @goods.size=size
         images.map{ |x|
           if x.length>0
             url=x.sub('thumb_', '')
@@ -315,6 +310,159 @@ class Parser
     }
   end
 
+  def get_mix_mode(id)
+    @shop=Shop.find(id)
+    mechan = Mechanize.new { |agent|
+      # Flickr refreshes after login
+      agent.follow_meta_refresh = true
+
+      #agent.page.encoding='WINDOWS-1251'
+    }
+    encoding = 'WINDOWS-1251'  # 'UTF-8'
+
+    @shop.catalog_shops.map{|catalog|
+      mechan.get(catalog.url+"?limitstart=0&limit=65535"){|p|
+        page = Nokogiri::HTML(p.body,nil,encoding) #+"?characteristics%5B%5D=1290270&page_size=100"
+        page.remove_namespaces!
+        catalog_title=catalog.title
+        #link to goods
+        links=get_links(p.parser,"//a[contains(concat(' ', @class, ' '), 'relative diblock')]",@shop.host)
+        links=links.compact.uniq
+        #get full info goods
+        links.each{  |link|
+          mechan.get(link){|pp2|
+
+            @gs=@shop.products.where(url:link)
+            if @gs.nil?
+              @goods=Product.new
+            else
+              @goods=@gs.first
+            end
+            if @goods.catalog_shop_id.nil?
+              @goods.catalog_shop_id=catalog.id
+            end
+
+            @goods.title=get_node_text(pp2.parser,"//h1[contains(concat(' ', @class, ' '), 'item_name')]").gsub("Товар:","").strip
+            desc=[]
+            pp2.parser.xpath("//div[contains(concat(' ', @class, ' '), 'content')]").map{|x|
+              temp=x.to_s.split("<br>")
+              temp.map{|t|
+                res=strip_tags(t)
+                if res.include? "Артикул"
+                  @goods.article=res[res.index(":")+1,res.length-res.index(":")-1].strip
+                elsif res.include? "Цвет"
+                  @goods.color=res[res.index(":")+1,res.length-res.index(":")-1].strip
+                else
+                  desc << res.to_s.gsub(/\s+/,' ')
+                end
+              }
+            }
+            @goods.description=get_node_texts_s(pp2.parser,"//td[contains(concat(' ', @id, ' '), 'right_content')]/p","\n")
+            if desc.length>0
+              if @goods.description.length>0
+                @goods.description=desc.join("\n")+"\n"+@goods.description
+              else
+                @goods.description=desc
+              end
+            end
+            images=get_photos(pp2.parser,"","//img[contains(concat(' ', @id, ' '), 'image_m')]")
+            images.map{ |x|
+              if x.length>0
+                url=x.sub("/z_","/")
+                Photo.where(:product_id => @goods.id, :url => url).first_or_create
+              end
+            }
+            @goods.category_path=get_nodes_a(pp2.parser,"//div[contains(concat(' ', @id, ' '), 'breadcrumbs')]/a",["Mix-Mode","Оптовый интернет магазин"]).join("/")
+            size=get_nodes_a(pp2.parser,"//table[contains(concat(' ', @id, ' '), 'sizes')]/tr[1]/td",["Размер"])
+
+            prices=get_nodes_a(pp2.parser,"//table[contains(concat(' ', @id, ' '), 'sizes')]/tr[2]/td",['Оптовая'],['руб.'],[],false)
+            if prices.size>0
+
+              prices.size.times{|i|
+                id=@goods.id
+                if i==0
+                  @goods.size=size[i]
+                  @goods.save
+                else
+                  @goodsNew=@gs.where(:size=>size[i]).first_or_create
+                  @goodsNew.article=@goods.article
+                  @goodsNew.size=size[i]
+                  id=@goodsNew.id
+                  @goodsNew.save
+                end
+                @price=Price.where(:product_id => id)
+                @new=@price.where(:cost=>prices[i].to_f).first_or_create
+                @new.save
+              }
+            else
+              pric=pp2.parser.xpath("//div[contains(concat(' ', @class, ' '), 'price')]").collect{|x| x.text unless x.nil?}.first
+              @price=Price.where(:product_id => @goods.id)
+              @new=@price.where(:cost=>pric.gsub('руб.','').to_f).first_or_create
+              @new.save
+              @goods.size=size.join("; ")
+              @goods.state="no_sale"
+              @goods.save
+            end
+          }
+        }
+      }
+    }
+  end
+  def get_yulia_prom(id)
+    @shop=Shop.find(id)
+    mechan = Mechanize.new { |agent|
+      # Flickr refreshes after login
+      agent.follow_meta_refresh = true
+
+      #agent.page.encoding='WINDOWS-1251'
+    }
+    encoding = 'WINDOWS-1251'  # 'UTF-8'
+
+    mechan.get(@shop.url)
+    @shop.catalog_shops.map{|catalog|
+      mechan.get(catalog.url+"?product_items_per_page=48"){|p|
+
+        page = Nokogiri::HTML(p.body,nil,encoding) #+"?characteristics%5B%5D=1290270&page_size=100"
+        page.remove_namespaces!
+        catalog_title=catalog.title
+        #link to goods
+        ls=[]
+        #p.parser.xpath("//p[contains(concat(' ', @class, ' '), 'title')]/a").map{|x|
+        #ls << x
+        #}
+        links=get_links_pages_all(p.parser,"//a[contains(concat(' ', @id, ' '), 'link_to_product')]","//a[contains(concat(' ', @class, ' '), 'b-pager__link')][last()-1]" ,@shop.host,"page_")
+        links=links.compact.uniq
+        #get full info goods
+        links.each{  |link|
+          mechan.get(link){|pp2|
+
+            @goods=@shop.products.where(url:link).first_or_create
+            if @goods.catalog_shop_id.nil?
+              @goods.catalog_shop_id=catalog.id
+            end
+
+            @goods.title=get_node_text(pp2.parser,"//h1[contains(concat(' ', @class, ' '), 'b-product__name')]").strip
+            @goods.article=get_node_text(pp2.parser,"//span[contains(concat(' ', @class, ' '), 'b-product__sku')]").gsub("Код:","").strip
+            @goods.color=""
+            add_prices(pp2.parser,["//p[contains(concat(' ', @class, ' '), 'b-product__price')]","//li[contains(concat(' ', @class, ' '), 'b-product__additional-price')]/div[contains(concat(' ', @class, ' '), 'b-data-list__name')]/span"],@goods.id,['грн.'])
+
+            @goods.description=get_node_texts_s(pp2.parser,"//div[contains(concat(' ', @class, ' '), 'b-content__body')]/p" ,"\n").gsub(/\s+/,' ')
+            images=get_photos(pp2.parser,"//a[contains(concat(' ', @rel, ' '), 'imagebox')]","//img[contains(concat(' ', @class, ' '), 'b-centered-image__img')]" )
+
+            @goods.size=""
+            images.map{ |x|
+              if x.length>0
+                Photo.where(:product_id => @goods.id, :url => url).first_or_create
+              end
+            }
+            @goods.category_path=get_node_texts_s(pp2.parser,"//div[contains(concat(' ', @class, ' '), 'bread_crumb_big')]/a","/",['Prom.ua','Одесса›Интернет-магазин "YULIA"','Ассортимент моделей'])
+            @goods.save
+          }
+        }
+      }
+    }
+  end
+
   private
   # @param [Nokogiri] html
 # @param [Array] xpaths
@@ -322,6 +470,7 @@ class Parser
   # @param [Array] replace
   def add_prices(html,xpaths,product_id,replace=[])
     @price=Price.where(:product_id => product_id)
+    no_price=true
     xpaths.map{|xpath|
       cost=html.xpath(xpath).collect {|node|
         unless node.nil? && node.text.length<0
@@ -330,8 +479,10 @@ class Parser
           @new=@price.where(:cost=>n.to_f).first_or_create
           @new.save
         end
+        no_price=false
       }
     }
+    return no_price
   end
 
   private
@@ -347,7 +498,6 @@ class Parser
         end
         links << link
       }
-
       return links.compact.uniq
   end
 
@@ -452,7 +602,7 @@ class Parser
   # @param [Nokogiri] html
   # @return [string]
   def get_node_text(html,xpath)
-    return html.xpath(xpath).collect {|node| node.text.strip unless node.text.nil? }.first
+    return html.xpath(xpath).collect {|node| node.text.strip unless node.text.nil? }.first.gsub(/\s+/,' ')
   end
 
   private
@@ -460,11 +610,67 @@ class Parser
   # @param [string] xpath
   # @param [string] split
   # @return [string]
-  def get_node_texts_s(html,xpath,split="\n")
-    res=html.xpath(xpath)
-    if res.nil?
-      return
-    end
-    return res.collect {|node| node.text.strip unless node.text.nil? }.join(split).strip
+  # @param [Array] not_word
+  def get_node_texts_s(html,xpath,split="\n",not_word=[])
+    res=[]
+    html.xpath(xpath).map{|x|
+      unless node.text.nil?
+        temp=x.text.strip.gsub(/\s+/,' ')
+        save=false
+        not_word.map{|z| save=true if save.include? z}
+        res << temp unless save
+      end
+    }
+    return res.join(split)
   end
+
+  private
+  # @param [Nokogiri] html
+  # @param [string] xpath
+  # @param [Array] not_word
+  # @param [Array] word
+  # @param [Array] replace
+  # @return [Array]
+  def get_nodes_a(html,xpath,not_word,replace=[],word=[],uniq=true)
+    res=[]
+    html.xpath(xpath).map { |x|
+      t=x.text.gsub(/\s+/, ' ').strip
+      temp=false
+      not_word.map { |z|
+        temp=true if t.include? z
+      }
+      if temp
+        t=nil
+      else
+        if word.size>0
+          if word.include? t
+            replace.map { |a| t.sub(a, '') }
+          else
+            t=nil
+          end
+        else
+          replace.map { |a| t.sub(a, '') }
+        end
+      end
+      res << t.to_s.strip unless t.nil?
+    }
+    uniq ? return res.compact.uniq : return res.compact
+  end
+
+  private
+  def get_attrs_a(html,xpath,attr,replace=[],word=[])
+    res=[]
+    html.xpath(xpath).map{|x|
+      t=x[attr]
+      if word.size>0
+        (word.include? t)? replace.map{|r| t.sub(r,"")} : t=nil
+      else
+        replace.map{|r| t.sub(r,"")}
+      end
+      res << t.to_s.strip unless t.nil?
+    }
+    return res.compact.uniq
+  end
+
+
 end

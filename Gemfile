@@ -53,6 +53,7 @@ end
 gem 'nokogiri'
 gem 'mechanize'
 gem 'writeexcel'
+gem 'sanitize'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.1.2'
