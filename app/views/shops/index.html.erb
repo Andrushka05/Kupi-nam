@@ -1,23 +1,72 @@
+<% content_for :header do -%>
+    <%= stylesheet_link_tag 'edit_product' %>
+
+<% end -%>
+<style type="text/css">
+    .shop{
+        border-bottom: 1px solid;
+        margin: 0 30px;
+    }
+    .title_shop{
+        float: left;
+        margin-right: 20px;
+        margin-left: 5px;
+        font-size: 1.7em;
+        position: relative;
+        top: -7px;
+    }
+    .title_shop a{
+        color: #141360;
+    }
+
+        .button_to{
+            float: right;
+        }
+.list_cat{
+    display: none;
+    margin-left: 15px;
+}
+    #catalog{
+        font-size: 1.2em;
+
+    }
+
+</style>
+<script type="application/javascript">
+  $(function(){
+
+  });
+</script>
 <h1>Список сайтов</h1>
 <%= link_to 'Добавить сайт', new_shop_path %>
-<table>
-  <tr>
-    <th>Название</th>
-    <th>Url</th>
-    <th>Xpath</th>
-    <th>Host</th>
-  </tr>
 
   <% @shop.each do |shop| %>
-      <tr>
-        <td><%= link_to shop.title, shop %></td>
-        <td><%= shop.url %></td>
-        <td><%= shop.xpath %></td>
-        <td><%= shop.host %></td>
-        <td><%= link_to 'Редактировать', edit_shop_path(shop) %></td>
-        <td><%= button_to 'Обновить каталог', get_catalogs_parsing_path(shop)  %></td>
-        <td><%= button_to 'Парсинг', get_goods_parsing_path(shop)  %></td>
-        <td><%= button_to 'Сохранить в xls', save_xls_save_path(shop)  %></td>
-      </tr>
+
+    <div class="panel panel-info">
+      <div class="panel-heading">
+        <label class="title_shop"><%= link_to shop.title, shop %></label>
+        <%= link_to 'Редактировать', edit_shop_path(shop) %>
+            <%= button_to 'Обновить каталог', get_catalogs_parsing_path(shop),:class => 'btn-xs  btn-default'  %>
+            <%= button_to 'Парсинг', get_goods_parsing_path(shop),:class => 'btn-xs  btn-default'  %>
+            <%= button_to 'Сохранить в xls', save_xls_save_path(shop),:class => 'btn-xs btn-default' %>
+
+        </div>
+      <div class="panel-body">
+        <div>
+          <a id="catalog" href="#"><span class="glyphicon glyphicon-arrow-right btn-sm" style="margin-right: 5px;"></span>Каталог</a>
+        <% shop.catalog_shops.map do |cat| %>
+            <div class="list_cat"><%= check_box_tag cat %><%= link_to cat.title, cat %>
+            <span class="label label-primary"><%=cat.products.size %></span></div>
+        <% end %>
+        </div>
+      </div>
+      <div class="panel-footer">
+        <span class="label"><a href='<%= shop.url %>'><%= shop.host %></a></span>
+        <span>XPATH:<%= shop.xpath %></span><span style="float: right">Последний парсинг:</span>
+       </div>
+    </div>
+
+    <div class="panel-body">
+      Panel content
+    </div>
   <% end %>
-</table>

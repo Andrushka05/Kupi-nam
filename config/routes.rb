@@ -9,6 +9,7 @@ KupiNam::Application.routes.draw do
   root 'shops#index'
   resources :shops
   resources :parsings
+  resources :catalog_shops
   # Example of regular route:
    #  get 'shops/:id' => 'shops#pars'
 

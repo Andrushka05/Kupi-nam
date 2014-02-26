@@ -25,6 +25,8 @@ class ParsingsController < ApplicationController
       @parser.get_yulia_prom(params[:id])
     elsif @sh.title.include? "Rawjeans"
       @parser.get_rawjeans(params[:id])
+    elsif @sh.title.include? "Noch-sorochki"
+      @parser.get_noch_sorochki(params[:id])
     end
     redirect_to shop_path
   end

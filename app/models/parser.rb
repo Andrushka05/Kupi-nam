@@ -76,7 +76,6 @@ class Parser
       }
     }
   end
-
   def get_lala_style(id)
     @shop=Shop.find(id)
     @shop.catalog_shops.map{|catalog|
@@ -247,7 +246,6 @@ class Parser
       }
     }
   end
-
   def get_arabella(id)
     @shop=Shop.find(id)
     mechan = Mechanize.new { |agent|
@@ -309,7 +307,6 @@ class Parser
     }
     }
   end
-
   def get_mix_mode(id)
     @shop=Shop.find(id)
     mechan = Mechanize.new { |agent|
@@ -425,7 +422,7 @@ class Parser
         page = Nokogiri::HTML(p.body,nil,encoding) #+"?characteristics%5B%5D=1290270&page_size=100"
         page.remove_namespaces!
         catalog_title=catalog.title
-        countPages=0
+
         links=get_links_pages_all(p.parser,"//a[contains(concat(' ', @id, ' '), 'link_to_product')]","//a[contains(concat(' ', @class, ' '), 'b-pager__link')][last()-1]" ,@shop.host,"page_")
         links=links.compact.uniq
         #get full info goods
@@ -456,16 +453,107 @@ class Parser
             }
             @goods.category_path=get_node_texts_s(pp2.parser,"//div[contains(concat(' ', @class, ' '), 'bread_crumb_big')]/a","/",['Prom.ua','Одесса›Интернет-магазин "YULIA"','Ассортимент моделей'])
             @goods.save
-            countPages+=1;
-            if countPages%7==0
-              sleep(7)
+            sleep(2.3)
+
+          }
+        }
+      }
+    }
+  end
+  def get_rawjeans(id)
+    @shop=Shop.find(id)
+    mechan = Mechanize.new { |agent|
+      # Flickr refreshes after login
+      agent.follow_meta_refresh = true
+
+      #agent.page.encoding='WINDOWS-1251'
+    }
+    encoding = 'WINDOWS-1251'  # 'UTF-8'
+
+    mechan.get(@shop.url)
+    @shop.catalog_shops.map{|catalog|
+      mechan.get(catalog.url+"?product_items_per_page=48"){|p|
+
+        page = Nokogiri::HTML(p.body,nil,encoding) #+"?characteristics%5B%5D=1290270&page_size=100"
+        page.remove_namespaces!
+        links=get_links_pages_all(p.parser,"//a[contains(concat(' ', @class, ' '), 'good_title')]","//div[contains(concat(' ', @class, ' '), 'pages')]/a[last()-1]",@shop.host,'start=')
+        links=links.compact.uniq
+        #get full info goods
+        links.each{  |link|
+          mechan.get(link){|pp2|
+
+            @goods=@shop.products.where(url:link).first_or_create
+            if @goods.catalog_shop_id.nil?
+              @goods.catalog_shop_id=catalog.id
             end
+
+            @goods.title=get_node_text(pp2.parser,"//span[contains(concat(' ', @class, ' '), 'good_title')]").strip
+            @goods.article=@goods.title
+
+            desc=pp2.parser.xpath("//span[contains(concat(' ', @class, ' '), 'good_option')]").map{|x| x.to_s}.join("\n")
+            if desc.split("<div>").size>desc.split("<p>").size
+              desc=desc.split("<div>")
+            else
+              if desc.split("<br>").size>desc.split("<p>").size
+                desc=desc.split("<br>")
+              else
+                desc=desc.split("<p>")
+              end
+            end
+            if desc.size==1
+              trw=''
+            end
+            rd=[]
+            size=''
+            color=''
+            desc.map{|x|
+              r=strip_tags(x).strip
+              if r.include? 'Размер'
+                if r.include? 'Цвет'
+                  size << strip_tags(r[r.index(':',r.index("Размер"))+1,r.index('Цвет')-r.index(':',r.index("Размер"))-1])
+                  color << strip_tags(r[r.index(':',r.index("Цвет"))+1,r.length-r.index(':',r.index("Цвет"))-1])
+                else
+                  size << strip_tags(r[r.index(':',r.index("Размер"))+1,r.length-r.index(':',r.index("Размер"))-1])
+                end
+              elsif r.include? 'Цвет'
+                color << strip_tags(r[r.index(':',r.index("Цвет"))+1,r.length-r.index(':',r.index("Цвет"))-1])
+              elsif r.length>0
+                rd << r
+              end
+            }
+            unless size.index('(').nil?
+              size=size[0,size.index('(')].strip
+            end
+            unless color.index('(').nil?
+              color=color[0,color.index('(')].strip
+            end
+            unless color.index('Состав').nil?
+              rd << color[color.index('Состав'),color.length-color.index('Состав')]
+              color=color[0,color.index('Состав')].strip
+            end
+            size=size.gsub(' ','; ') if size.length>0
+
+            @goods.description=rd.join("\n")
+            images=get_photos(pp2.parser,"","//a[contains(concat(' ', @class, ' '), 'list_images')]/img","",@shop.host )
+            @goods.color=color
+            @goods.size=size
+            images.map{ |x|
+              if x.length>0
+                Photo.where(:product_id => @goods.id, :url => x).first_or_create
+              end
+            }
+            @goods.category_path='Новинки'
+            @goods.save
+
           }
         }
       }
     }
   end
 
+  def get_noch_sorochki(id)
+
+  end
   private
   # @param [Nokogiri] html
 # @param [Array] xpaths
