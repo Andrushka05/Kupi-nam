@@ -31,98 +31,104 @@ class Save
       #count_ext_prop=x.ext_props.size if ExtProp.find_all_by_product_id.size>0 && x.ext_props.size > count_ext_prop
       count_photo=x.photos.size if !x.photos.nil? && x.photos.size > count_photo
     }
-
+    # Add and define a format
+    format = workbook.add_format(:bold=>1,:border=>1,:align=>'center')
+    format2=workbook.add_format(:border=>1)
+    #format.set_bold
+    #format.set_border()
+    #format.set_color('red')
+    #format.set_align('center')
     count_column=0
-    worksheet.write(0,count_column,'main_category')
-    worksheet.write(1,count_column,'Рубрика в общем каталоге')
+    worksheet.write(0,count_column,'main_category',format2)
+    worksheet.write(1,count_column,'Рубрика в общем каталоге',format)
     count_column+=1
-    worksheet.write(0,count_column,'category_path')
-    worksheet.write(1,count_column,'Рубрика в каталоге закупки')
+    worksheet.write(0,count_column,'category_path',format2)
+    worksheet.write(1,count_column,'Рубрика в каталоге закупки',format)
     count_column+=1
-    worksheet.write(0,count_column,'title')
-    worksheet.write(1,count_column,'Название')
+    worksheet.write(0,count_column,'title',format2)
+    worksheet.write(1,count_column,'Название',format)
     count_column+=1
-    worksheet.write(0,count_column,'article2')
-    worksheet.write(1,count_column,'Артикул')
+    worksheet.write(0,count_column,'article2',format2)
+    worksheet.write(1,count_column,'Артикул',format)
     count_column+=1
-    worksheet.write(0,count_column,'article')
-    worksheet.write(1,count_column,'Артикул поставщика (необязательно)')
+    worksheet.write(0,count_column,'article',format2)
+    worksheet.write(1,count_column,'Артикул поставщика (необязательно)',format)
     count_column+=1
     count_price.times{|i|
-      worksheet.write(0,count_column,'prices'+i.to_s)
-      worksheet.write(1,count_column,'Оптовая цена '+i.to_s)
+      worksheet.write(0,count_column,'prices'+i.to_s,format2)
+      worksheet.write(1,count_column,'Оптовая цена '+i.to_s,format)
       count_column+=1
     }
-    worksheet.write(0,count_column,'client_price')
-    worksheet.write(1,count_column,'Цена c орг. сбором')
+    worksheet.write(0,count_column,'client_price',format2)
+    worksheet.write(1,count_column,'Цена c орг. сбором',format)
     count_column+=1
-    worksheet.write(0,count_column,'size')
-    worksheet.write(1,count_column,'Размер')
+    worksheet.write(0,count_column,'color',format2)
+    worksheet.write(1,count_column,'Цвет',format)
     count_column+=1
-    worksheet.write(0,count_column,'color')
-    worksheet.write(1,count_column,'Цвет')
+    worksheet.write(0,count_column,'size',format2)
+    worksheet.write(1,count_column,'Размер',format)
     #ext prop
     if count_ext_prop>0
       count_ext_prop.times{|i|
-        worksheet.write(0,count_column,'props'+i)
-        worksheet.write(1,count_column,'Свойство'+i)
+        worksheet.write(0,count_column,'props'+i,format2)
+        worksheet.write(1,count_column,'Свойство'+i,format)
         count_column+=1
       }
     end
     count_column+=1
-    worksheet.write(0,count_column,'description')
-    worksheet.write(1,count_column,'Описание')
+    worksheet.write(0,count_column,'description',format2)
+    worksheet.write(1,count_column,'Описание',format)
     count_column+=1
-    worksheet.write(0,count_column,'url')
-    worksheet.write(1,count_column,'Ссылка на сайте поставщика')
+    worksheet.write(0,count_column,'url',format2)
+    worksheet.write(1,count_column,'Ссылка на сайте поставщика',format)
     count_column+=1
     #photos
     count_photo.times{|i|
-      worksheet.write(0,count_column,'photos'+i.to_s)
-      worksheet.write(1,count_column,'Фото '+i.to_s)
+      worksheet.write(0,count_column,'photos'+i.to_s,format2)
+      worksheet.write(1,count_column,'Фото '+i.to_s,format)
       count_column+=1
     }
 
     count_row=2
     @shop.products.each { |p|
       count_column=0
-      worksheet.write(count_row,count_column,p.main_categories)
+      worksheet.write(count_row,count_column,p.main_categories,format2)
       count_column+=1
-      worksheet.write(count_row,count_column,p.category_path)
+      worksheet.write(count_row,count_column,p.category_path,format2)
       count_column+=1
-      worksheet.write(count_row,count_column,p.title)
+      worksheet.write(count_row,count_column,p.title,format2)
       count_column+=1
-      worksheet.write(count_row,count_column,p.article2)
+      worksheet.write(count_row,count_column,p.article2,format2)
       count_column+=1
-      worksheet.write(count_row,count_column,p.article)
+      worksheet.write(count_row,count_column,p.article,format2)
       count_column+=1
       if count_price>0
         p.prices.map{|price|
-        worksheet.write(count_row,count_column,price.cost)
+        worksheet.write(count_row,count_column,price.cost,format2)
         count_column+=1
       }
       end
-      worksheet.write(count_row,count_column,p.client_prices)
+      worksheet.write(count_row,count_column,p.client_prices,format2)
       count_column+=1
-      worksheet.write(count_row,count_column,p.size)
+      worksheet.write(count_row,count_column,p.color,format2)
       count_column+=1
-      worksheet.write(count_row,count_column,p.color)
+      worksheet.write(count_row,count_column,p.size,format2)
       #ext prop
       if count_ext_prop>0
         p.ext_props.map{|ext|
-          worksheet.write(count_row,count_column,ext.value)
+          worksheet.write(count_row,count_column,ext.value,format2)
           count_column+=1
         }
       end
       count_column+=1
-      worksheet.write(count_row,count_column,p.description)
+      worksheet.write(count_row,count_column,p.description,format2)
       count_column+=1
-      worksheet.write(count_row,count_column,p.url)
+      worksheet.write(count_row,count_column,p.url,format2)
       count_column+=1
       #photos
       if count_photo>0
         p.photos.map{|photo|
-          worksheet.write(count_row,count_column,photo.url)
+          worksheet.write(count_row,count_column,photo.url,format2)
           count_column+=1
         }
       end

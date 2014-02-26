@@ -21,9 +21,10 @@ class ParsingsController < ApplicationController
       @parser.get_arabella(params[:id])
     elsif @sh.title.include? 'Mix-mode'
       @parser.get_mix_mode(params[:id])
-    end
     elsif @sh.title.include? "Yulia.prom.ua"
       @parser.get_yulia_prom(params[:id])
+    elsif @sh.title.include? "Rawjeans"
+      @parser.get_rawjeans(params[:id])
     end
     redirect_to shop_path
   end

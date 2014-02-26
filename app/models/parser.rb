@@ -425,11 +425,7 @@ class Parser
         page = Nokogiri::HTML(p.body,nil,encoding) #+"?characteristics%5B%5D=1290270&page_size=100"
         page.remove_namespaces!
         catalog_title=catalog.title
-        #link to goods
-        ls=[]
-        #p.parser.xpath("//p[contains(concat(' ', @class, ' '), 'title')]/a").map{|x|
-        #ls << x
-        #}
+        countPages=0
         links=get_links_pages_all(p.parser,"//a[contains(concat(' ', @id, ' '), 'link_to_product')]","//a[contains(concat(' ', @class, ' '), 'b-pager__link')][last()-1]" ,@shop.host,"page_")
         links=links.compact.uniq
         #get full info goods
@@ -442,21 +438,28 @@ class Parser
             end
 
             @goods.title=get_node_text(pp2.parser,"//h1[contains(concat(' ', @class, ' '), 'b-product__name')]").strip
-            @goods.article=get_node_text(pp2.parser,"//span[contains(concat(' ', @class, ' '), 'b-product__sku')]").gsub("Код:","").strip
+            article=get_node_text(pp2.parser,"//span[contains(concat(' ', @class, ' '), 'b-product__sku')]")
+            article.gsub("Код:","").strip unless article.nil?
+            article=@goods.title if article.nil?
+            @goods.article=article
             @goods.color=""
             add_prices(pp2.parser,["//p[contains(concat(' ', @class, ' '), 'b-product__price')]","//li[contains(concat(' ', @class, ' '), 'b-product__additional-price')]/div[contains(concat(' ', @class, ' '), 'b-data-list__name')]/span"],@goods.id,['грн.'])
 
-            @goods.description=get_node_texts_s(pp2.parser,"//div[contains(concat(' ', @class, ' '), 'b-content__body')]/p" ,"\n").gsub(/\s+/,' ')
+            @goods.description=get_node_texts_s(pp2.parser,"//div[contains(concat(' ', @class, ' '), 'b-content__body b-user-content')]" ,"\n").gsub(/\s+/,' ')
             images=get_photos(pp2.parser,"//a[contains(concat(' ', @rel, ' '), 'imagebox')]","//img[contains(concat(' ', @class, ' '), 'b-centered-image__img')]" )
 
             @goods.size=""
             images.map{ |x|
               if x.length>0
-                Photo.where(:product_id => @goods.id, :url => url).first_or_create
+                Photo.where(:product_id => @goods.id, :url => x).first_or_create
               end
             }
             @goods.category_path=get_node_texts_s(pp2.parser,"//div[contains(concat(' ', @class, ' '), 'bread_crumb_big')]/a","/",['Prom.ua','Одесса›Интернет-магазин "YULIA"','Ассортимент моделей'])
             @goods.save
+            countPages+=1;
+            if countPages%7==0
+              sleep(7)
+            end
           }
         }
       }
@@ -602,7 +605,7 @@ class Parser
   # @param [Nokogiri] html
   # @return [string]
   def get_node_text(html,xpath)
-    return html.xpath(xpath).collect {|node| node.text.strip unless node.text.nil? }.first.gsub(/\s+/,' ')
+    return html.xpath(xpath).collect {|node| node.text.strip unless node.text.nil? }.first
   end
 
   private
@@ -614,7 +617,7 @@ class Parser
   def get_node_texts_s(html,xpath,split="\n",not_word=[])
     res=[]
     html.xpath(xpath).map{|x|
-      unless node.text.nil?
+      unless x.text.nil?
         temp=x.text.strip.gsub(/\s+/,' ')
         save=false
         not_word.map{|z| save=true if save.include? z}
@@ -654,7 +657,11 @@ class Parser
       end
       res << t.to_s.strip unless t.nil?
     }
-    uniq ? return res.compact.uniq : return res.compact
+    if uniq then
+      return res.compact.uniq
+    else
+      return res.compact
+    end
   end
 
   private
