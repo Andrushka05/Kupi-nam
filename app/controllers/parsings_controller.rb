@@ -12,6 +12,7 @@ class ParsingsController < ApplicationController
 
   def get_goods
     @parser=Parser.new
+    fdsf=params[:catalog_shop]
     @sh=Shop.find(params[:id])
     if @sh.title.include? 'Rekantino'
       @parser.get_rekantino(params[:id])
@@ -27,6 +28,8 @@ class ParsingsController < ApplicationController
       @parser.get_rawjeans(params[:id])
     elsif @sh.title.include? "Noch-sorochki"
       @parser.get_noch_sorochki(params[:id])
+    elsif @sh.title.include? "Deniliz"
+      @parser.get_deniliz(params[:id])
     end
     redirect_to shop_path
   end

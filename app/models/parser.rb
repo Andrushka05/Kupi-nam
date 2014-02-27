@@ -550,9 +550,117 @@ class Parser
       }
     }
   end
-
   def get_noch_sorochki(id)
+    @shop=Shop.find(id)
+    mechan = Mechanize.new { |agent|
+      # Flickr refreshes after login
+      agent.follow_meta_refresh = true
+      #agent.page.encoding='WINDOWS-1251'
+    }
+    encoding = 'WINDOWS-1251'  # 'UTF-8'
+    mechan.get(@shop.url)
+    @shop.catalog_shops.map{|catalog|
+      mechan.get(catalog.url){|p|
+        page = Nokogiri::HTML(p.body,nil,encoding) #+"?characteristics%5B%5D=1290270&page_size=100"
+        page.remove_namespaces!
+        catalog_title=catalog.title
+        links=get_links_pages_all(p.parser,"//a[text()='подробнее...']","//div/a[contains(concat(' ', @href, ' '), 'katalog')][last()]" ,@shop.host,"katalog")
+        links=links.compact.uniq
+        #get full info goods
+        links.each{  |link|
+          mechan.get(link){|pp2|
+            @goods=@shop.products.where(url:link).first_or_create
+            if @goods.catalog_shop_id.nil?
+              @goods.catalog_shop_id=catalog.id
+            end
 
+            @goods.title=get_node_text(pp2.parser,"//tr/td[3]/h3")
+            @goods.article=get_node_text(pp2.parser,"//tr/td[3]/p[1]").gsub("Артикульный №","")
+            @goods.color=get_node_texts_s(pp2.parser,"//table[contains(concat(' ', @cellpadding, ' '), '1')]/tr/td[1]",'; ',['цвет'])
+            add_prices(pp2.parser,["//form/table/tr/td[3]"],@goods.id,['Цена','рублей'])
+            size=get_node_texts_s(pp2.parser,"//tr/td/ul/li",'; ',['размер'])
+            @goods.description=get_node_texts_s(pp2.parser,"//tr/td/p" ,"\n").gsub(/\s+/,' ')
+            images=get_photos(pp2.parser,'',"//td/div/img | //tr/td/img")
+
+            @goods.size=size
+            images.map{ |x|
+              if x.length>0
+                Photo.where(:product_id => @goods.id, :url => x).first_or_create
+              end
+            }
+            @goods.category_path=catalog_title
+            @goods.save
+          }
+        }
+      }
+    }
+  end
+  def get_deniliz(id)
+    @shop=Shop.find(id)
+    mechan = Mechanize.new { |agent|
+      # Flickr refreshes after login
+      agent.follow_meta_refresh = true
+      #agent.page.encoding='WINDOWS-1251'
+    }
+    encoding = 'WINDOWS-1251'  # 'UTF-8'
+    mechan.get(@shop.url){|p|
+      log = p.form_with(){ |form|
+        form.email='yunnesa@mail.ru'
+        form.password='yunnesa2405'
+      }.submit
+    }
+    mechan.get(@shop.url)
+    @shop.catalog_shops.map{|catalog|
+      mechan.get(catalog.url+"?page=all"){|p|
+        page = Nokogiri::HTML(p.body,nil,encoding) #+"?characteristics%5B%5D=1290270&page_size=100"
+        page.remove_namespaces!
+        catalog_title=catalog.title
+        links=get_links(p.parser,"//h4[contains(concat(' ', @itemprop, ' '), 'name')]/a",@shop.host)
+        links=links.compact.uniq
+        #get full info goods
+        links.each{  |link|
+          mechan.get(link){|pp2|
+            @goods=@shop.products.where(url:link).first_or_create
+            if @goods.catalog_shop_id.nil?
+              @goods.catalog_shop_id=catalog.id
+            end
+
+            @goods.title=get_node_text(pp2.parser,"//div[contains(concat(' ', @class, ' '), 'title')]/h1")
+            @goods.article=get_node_text(pp2.parser,"//span[contains(concat(' ', @itemprop, ' '), 'identifier')]")
+            @goods.color=''
+            color=''
+            add_prices(pp2.parser,["//span[contains(concat(' ', @id, ' '), 'price')]"],@goods.id,[])
+            size=''
+            desc=''
+            get_nodes_a(pp2.parser,"//ul[contains(concat(' ', @class, ' '), 'features')]/li",[]).map{|x|
+              temp=x.text.strip
+              if temp.include? 'Размер'
+                size = strip_tags(temp[temp.index(":",temp.index("Размер"))+1,temp.length-temp.index(":",temp.index("Размер"))-1])
+              elsif temp.include? 'Цвет'
+                color= strip_tags(temp[temp.index(":",temp.index("Цвет"))+1,temp.length-temp.index(":",temp.index("Цвет"))-1])
+              elsif temp.length>0
+                desc << temp
+              end
+            }
+            @goods.description=get_node_texts_s(pp2.parser,"//div[contains(concat(' ', @class, ' '), 'block description')]/p" ,"\n").gsub(/\s+/,' ')
+            images=get_photos(pp2.parser,"//a[contains(concat(' ', @class, ' '), 'cloud-zoom-gallery')]","//img[contains(concat(' ', @class, ' '), 'b-centered-image__img')]" )
+            if @goods.description.length>0
+              @goods.description << "\n"+desc.join("\n")
+            else
+              @goods.description=desc.join("\n")
+            end
+            @goods.size=size
+            images.map{ |x|
+              if x.length>0
+                Photo.where(:product_id => @goods.id, :url => x).first_or_create
+              end
+            }
+            @goods.category_path=get_node_texts_s(pp2.parser,"//div[contains(concat(' ', @class, ' '), 'breadcrumbs')]/a","/",["Главная"])
+            @goods.save
+          }
+        }
+      }
+    }
   end
   private
   # @param [Nokogiri] html
@@ -708,7 +816,7 @@ class Parser
       unless x.text.nil?
         temp=x.text.strip.gsub(/\s+/,' ')
         save=false
-        not_word.map{|z| save=true if save.include? z}
+        not_word.map{|z| save=true if temp.include? z}
         res << temp unless save
       end
     }
