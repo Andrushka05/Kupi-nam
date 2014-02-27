@@ -7,7 +7,8 @@ class ParsingsController < ApplicationController
   def get_catalogs
     @parser=Parser.new
     @parser.get_catalogs(params[:id])
-    redirect_to shops_path
+    @catalogs=CatalogShop.where(:shop_id => params[:id])
+    render :json => @catalogs
   end
 
   def get_goods
@@ -33,5 +34,14 @@ class ParsingsController < ApplicationController
     end
     redirect_to shop_path
   end
-
+=begin
+  def as_json(options={})
+    super(:only => [:first_name,:last_name,:city,:state],
+          :include => {
+              :employers => {:only => [:title]},
+              :roles => {:only => [:name]}
+          }
+    )
+  end
+=end
 end

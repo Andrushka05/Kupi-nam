@@ -1,85 +1,151 @@
 <style type="text/css">
-    .shop{
+    .shop {
         border-bottom: 1px solid;
         margin: 0 30px;
     }
-    .title_shop{
+
+    .title_shop {
         float: left;
         margin-right: 20px;
         margin-left: 5px;
         font-size: 1.7em;
 
     }
-    .title_shop a{
+
+    .title_shop a {
         color: #ffffff;
     }
 
-        .button_to{
-            float: left;
-        }
-.list_cat{
-    padding-left: 35px;
-}
-.none{
-    display: none;
-}
-    .catalog{
+    .button_to {
+        float: left;
+    }
+
+    .list_cat {
+        padding-left: 35px;
+    }
+
+    .none {
+        display: none;
+    }
+
+    .catalog {
         font-size: 1.2em;
         float: left;
-        margin-bottom: -4px;
+        font-weight: 700;
     }
-    .catalog span{
+
+    .catalog span {
         margin-right: 5px;
         position: relative;
-        top:-2px;
+        top: -2px;
     }
-.img_download{
-    margin-left: 10px;
-}
+
+    .img_download {
+        margin-left: 10px;
+    }
+
 
 </style>
 <script type="application/javascript">
-  $(function(){
-    $(".catalog").click(function(e){
-        e.preventDefault();
-        var parent=$(this).parent();
-        if(parent.children(".none").length>0)
-            parent.children("div").removeClass("none");
-        else
-            parent.children("div").addClass("none");
-    })
-  });
+    $(function () {
+        $(".catalog").click(function (e) {
+            e.preventDefault();
+            var parent = $(this).parent().children("div");
+            if (parent.children(".none").length > 0)
+                parent.children("div").removeClass("none");
+            else
+                parent.children("div").addClass("none");
+        });
+        $('span.catalog_button>a').click(function (e) {
+            e.preventDefault();
+            var href = $(this).prop("href");
+            var div = $(this).parent().children(".checkboxes")
+            get_catalogs(href, div)
+        });
+        $('span.catalog_button>button').click(function () {
+            var shop_id=$(this).parent().parent().prop("data-shop-id");
+            var catalogs=[];
+            $("input[data-shop-id='"+shop_id+"']").each(function(e){
+                if (e.checked)
+                    catalogs.push(e.val);
+            });
+
+            setTimeout(parsing(catalogs,shop_id),100);
+            $("div.info").html("<span>Парсинг...</span>")
+        });
+        function get_catalogs(url, div_checkboxes) {
+            $.ajax({
+                url: url,
+                method: 'POST',
+                dataType: "json",
+                timeout: 10000,
+                success: function (data) {
+                    var html = "";
+                    for (var i = 0; i < data.length; i++) {
+                        html += '<div class="list_cat"><input type="checkbox" name="checkbox[]" value="' + data[i].id + '" />' + data[i].title +
+                                '<span class="label label-primary">' + data[i].product.length + '</span></div>';
+                    }
+                    if (html.length == 0)
+                        html = "<span>Каталог пуст (Выполните обновление каталог)</span>"
+                    $(div_checkboxes).html(html)
+                },
+                error: function (data) {
+                    alert(data)
+                }
+            })
+        }
+        function parsing(catalogs, shop_id) {
+            $.ajax({
+                url: '/parsings/get_goods?catalogs=' + encodeURI(catalogs),
+                method: 'POST',
+                dataType: "json",
+                timeout: 10000,
+                success: function (data) {
+
+                    $("div.info").html("<span>Скачено 1000 товаров</span>")
+                },
+                error: function (data) {
+                    alert(data)
+                }
+            })
+        }
+    });
 </script>
-<h2><%= link_to 'Добавить сайт', new_shop_path%></h2>
-
-<% form_for @shop , as: :post, url: get_goods_parsing_path(@shop) do |shop|%>
-
+<h2><%= link_to 'Добавить сайт', new_shop_path %></h2>
+<% @shop.each do |shop| %>
     <div class="panel panel-primary">
       <div class="panel-heading" style="height: 55px;">
         <label class="title_shop"><%= link_to shop.title, shop %></label>
-        <%= link_to image_tag('edit.png',:width => 30,:height => 30,:title => "Редактировать"), edit_shop_path(shop) %>
-        <%= link_to image_tag('XLS.png',:width => 30,:height => 30,:title => "Скачать Excel файл"), save_xls_save_path(shop),:class => "img_download" %>
+        <%= link_to image_tag('edit.png', :width => 30, :height => 30, :title => "Редактировать"), edit_shop_path(shop) %>
+        <%= link_to image_tag('XLS.png', :width => 30, :height => 30, :title => "Скачать Excel файл"), save_xls_save_path(shop), :class => "img_download" %>
       </div>
       <div class="panel-body">
-        <div>
-          <a class="catalog" href="#" title="Раскрыть список каталога"><span><%=image_tag('add.png',:width => 10,:height => 10)%></span>Каталог</a>
-          <span style="margin-left: 10px">
-            <%= link_to image_tag('refresh.png',:width => 20,:height => 20,:title => 'Обновить каталог'), get_catalogs_parsing_path(shop)%>
+        <div data-shop-id="<%= shop.id %>">
+          <a class="catalog" href="#" title="Раскрыть список каталога"><span><%= image_tag('add.png', :width => 10, :height => 10) %></span>Каталог</a>
+          <span class="catalog_button">
+            <%= link_to image_tag('refresh.png', :width => 20, :height => 20, :title => 'Обновить каталог'), get_catalogs_parsing_path(shop), :remote => true %>
+            <button class="btn  btn-default" data-shop-id="<%= shop.id %>">Парсинг</button>
+            <div class="info"></div>
            </span>
 
-            <% :catalog_shops.map do |cat| %>
-                <div class="list_cat none"><%= check_box_tag 'catalog_shop' %><%= link_to cat.title, cat %>
-                <span class="label label-primary"><%=cat.products.size %></span></div>
-            <% end %>
-              <div class="clearfix"></div>
-              <input type="submit" value="Парсинг" class="btn  btn-default"/>
 
+          <div class="checkboxes">
+            <% shop.catalog_shops.map do |cat| %>
+                <div class="list_cat none">
+                  <input type="checkbox" data-shop-id="<%= shop.id %>" name="checkbox[]" value="<%= cat.id %>"/><%= cat.title %>
+                  <span class="label label-primary"><%= cat.products.size %></span>
+                </div>
+            <% end %>
+            <div class="clearfix"></div>
+          </div>
 
         </div>
       </div>
       <div class="panel-footer">
         <span class="label"><a href='<%= shop.url %>'><%= shop.host %></a></span>
-        <span>XPATH:<%= shop.xpath %></span><span style="float: right">Последний парсинг:<i><%=shop.products.order("updated_at DESC").first.updated_at if shop.products.size>0%></i></span>
-       </div>
+        <span>XPATH:<%= shop.xpath %></span><span style="float: right">Последний парсинг:<i><%= shop.products.order("updated_at DESC").first.updated_at if shop.products.size>0 %></i></span>
+      </div>
     </div>
-  <% end %>
+
+<% end %>
+
