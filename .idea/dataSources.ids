@@ -727,6 +727,8 @@
       <column name="shop_id" sqlType="INT" length="10" precision="0" nullable="true" jdbcType="4"/>
       <column name="created_at" sqlType="DATETIME" length="19" precision="0" nullable="true" jdbcType="93"/>
       <column name="updated_at" sqlType="DATETIME" length="19" precision="0" nullable="true" jdbcType="93"/>
+      <column name="time_download" sqlType="TIME" length="8" precision="0" nullable="true" jdbcType="92" def="JzAwOjAwOjAwJw=="/>
+      <column name="date_last_download" sqlType="DATETIME" length="19" precision="0" nullable="true" jdbcType="93"/>
       <primary-key name="PRIMARY" columns="id"/>
       <index name="index_catalog_shops_on_shop_id" unique="false" columns="shop_id"/>
     </table>

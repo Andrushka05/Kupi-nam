@@ -17,7 +17,7 @@
     }
 
     .button_to {
-        float: left;
+        float: right;
     }
 
     .list_cat {
@@ -43,7 +43,9 @@
     .img_download {
         margin-left: 10px;
     }
-
+.load{
+    background-image: url("http://sampsonresume.com/labs/pIkfp.gif");
+}
 
 </style>
 <script type="application/javascript">
@@ -71,28 +73,30 @@
                 if (ch)
                     catalogs.push($(this).val());
             });
-
+            $(this).parent(".panel").children(".load").removeClass("none");
             setTimeout(parsing(catalogs,shop_id),100);
-            $("div.info").html("<span>Парсинг...</span>")
+            $("div[@data-shop-id='"+shop_id+"']>span>div.info").html("<span>Парсинг...</span>");
+            $("div[@data-shop-id='"+shop_id+"']>span>div.info").addClass('alert alert-info');
         });
         function get_catalogs(url, div_checkboxes) {
             $.ajax({
                 url: url,
                 method: 'POST',
                 dataType: "json",
-                timeout: 10000,
+                timeout: 20000,
                 success: function (data) {
                     var html = "";
                     for (var i = 0; i < data.length; i++) {
                         html += '<div class="list_cat"><input type="checkbox" name="checkbox[]" value="' + data[i].id + '" />' + data[i].title +
-                                '<span class="label label-primary">' + data[i].product.length + '</span></div>';
+                                '<span class="label label-primary">' + data[i].count + '</span></div>';
                     }
                     if (html.length == 0)
                         html = "<span>Каталог пуст (Выполните обновление каталог)</span>"
                     $(div_checkboxes).html(html)
+
                 },
                 error: function (data) {
-                    alert(data)
+                    alert(data.value)
                 }
             })
         }
@@ -102,13 +106,22 @@
                 method: 'POST',
                 dataType: "json",
                 data:{catalogs:catalogs},
-                timeout: 10000,
+                timeout: 1000*60*60*4,
                 success: function (data) {
-
-                    $("div.info").html("<span>Скачено 1000 товаров</span>")
+                    var checkboxes='<div class="list_cat">';
+                    for(var i=0;i<data.catalogs.length;i++){
+                        checkboxes+='<input type="checkbox" data-shop-id="'+shop_id+'" name="checkbox[]" value="'+data.catalogs[i].id+'"/>'+data.catalogs[i].title+
+                                    '<span class="label label-primary">'+data.catalogs[i].count+'</span>';
+                    }
+                    checkboxes+='</div>';
+                    $("div[@data-shop-id='"+shop_id+"']>div.checkboxes>div.list_cat").remove();
+                    $("div[@data-shop-id='"+shop_id+"']>div.checkboxes>").append(checkboxes);
+                    $("div[@data-shop-id='"+shop_id+"']>span>div.info").addClass('alert alert-success');
+                    $("div[@data-shop-id='"+shop_id+"']>span>div.info").html("<span>Время парсинга: '+data.time+'</span>");
+                    $("div[@data-shop-id='"+shop_id+"']").parent(".panel").children(".load").addClass("none");
                 },
                 error: function (data) {
-                    alert(data)
+                    alert("Ошибка парсинга магазина"+shop_id+" Error:"+data.value)
                 }
             })
         }
@@ -121,6 +134,8 @@
         <label class="title_shop"><%= link_to shop.title, shop %></label>
         <%= link_to image_tag('edit.png', :width => 30, :height => 30, :title => "Редактировать"), edit_shop_path(shop) %>
         <%= link_to image_tag('XLS.png', :width => 30, :height => 30, :title => "Скачать Excel файл"), save_xls_save_path(shop), :class => "img_download" %>
+        <%= button_to "Скачать Excel файл", save_xls_save_path(shop) %>
+        <div class="load none"></div>
       </div>
       <div class="panel-body">
         <div data-shop-id="<%= shop.id %>">
@@ -128,9 +143,10 @@
           <span class="catalog_button">
             <%= link_to image_tag('refresh.png', :width => 20, :height => 20, :title => 'Обновить каталог'), get_catalogs_parsing_path(shop), :remote => true %>
             <button class="btn  btn-default" data-shop-id="<%= shop.id %>">Парсинг</button>
+
             <div class="info"></div>
            </span>
-
+<%= button_to "test",get_goods_parsing_path(shop) %>
           <div class="checkboxes">
             <% shop.catalog_shops.map do |cat| %>
                 <div class="list_cat none">
