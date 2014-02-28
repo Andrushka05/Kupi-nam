@@ -63,11 +63,13 @@
             get_catalogs(href, div)
         });
         $('span.catalog_button>button').click(function () {
-            var shop_id=$(this).parent().parent().prop("data-shop-id");
+            var shop_id=$(this).parent().parent().attr("data-shop-id");
             var catalogs=[];
             $("input[data-shop-id='"+shop_id+"']").each(function(e){
-                if (e.checked)
-                    catalogs.push(e.val);
+                var ch=$(this).prop("checked");
+                var ch2=$(this).attr("checked");
+                if (ch)
+                    catalogs.push($(this).val());
             });
 
             setTimeout(parsing(catalogs,shop_id),100);
@@ -96,9 +98,10 @@
         }
         function parsing(catalogs, shop_id) {
             $.ajax({
-                url: '/parsings/get_goods?catalogs=' + encodeURI(catalogs),
+                url: '/parsings/'+shop_id+'/get_goods',
                 method: 'POST',
                 dataType: "json",
+                data:{catalogs:catalogs},
                 timeout: 10000,
                 success: function (data) {
 
@@ -128,11 +131,10 @@
             <div class="info"></div>
            </span>
 
-
           <div class="checkboxes">
             <% shop.catalog_shops.map do |cat| %>
                 <div class="list_cat none">
-                  <input type="checkbox" data-shop-id="<%= shop.id %>" name="checkbox[]" value="<%= cat.id %>"/><%= cat.title %>
+                  <input type="checkbox" data-shop-id="<%= shop.id %>" name="checkbox[]" value="<%= cat.id %>" checked="checked"/><%= cat.title %>
                   <span class="label label-primary"><%= cat.products.size %></span>
                 </div>
             <% end %>

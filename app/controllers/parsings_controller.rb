@@ -13,7 +13,7 @@ class ParsingsController < ApplicationController
 
   def get_goods
     @parser=Parser.new
-    fdsf=params[:catalog_shop]
+    fdsf=params[:catalogs]
     @sh=Shop.find(params[:id])
     if @sh.title.include? 'Rekantino'
       @parser.get_rekantino(params[:id])
