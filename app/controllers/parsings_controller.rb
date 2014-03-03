@@ -24,7 +24,7 @@ class ParsingsController < ApplicationController
     @sh=Shop.find(params[:id])
     @cats=CatalogShop.where(:id=>catalogs)
     @cats=@sh.catalog_shops unless @cats.any?
-
+    date_begin=DateTime.now
     if @sh.title.include? 'Rekantino'
       @parser.get_rekantino(@cats)
     elsif @sh.title.include? 'Lala-style'
@@ -46,11 +46,13 @@ class ParsingsController < ApplicationController
     count_download=3
     respond_to do |format|
       format.html # index.html.erb
-      format.json  { render :json => { :time => time,
+      format.json  { render :json => { :time => CatalogShop.where("shop_id=?, date_last_download>=?",@sh.id, date_begin).sum('time_download'),
+                                       :date_last => CatalogShop.where(:shop_id => @sh.id).maximum('date_last_download'),
                                        :catalogs=>@cats.map{|x| {
                                            :id=>x.id,
                                            :title=>x.title,
-                                           :count=>Product.where(:catalog_shop_id => x.id).size
+                                           :count=>Product.where(:catalog_shop_id => x.id).size,
+                                           :time_download=>x.time_download,
                                        }}}}
     end
   end

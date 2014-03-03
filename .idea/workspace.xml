@@ -12,7 +12,7 @@
   </component>
   <component name="ChangesViewManager" flattened_view="true" show_ignored="false" />
   <component name="CoverageDataManager">
-    <SUITE FILE_PATH="coverage/Kupi-nam@Development__Kupi_nam.coverage" NAME="Development: Kupi-nam Coverage Results" MODIFIED="1393583765799" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="rcov" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" MODULE_NAME="Kupi-nam" />
+    <SUITE FILE_PATH="coverage/Kupi-nam@Development__Kupi_nam.coverage" NAME="Development: Kupi-nam Coverage Results" MODIFIED="1393662003311" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="rcov" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" MODULE_NAME="Kupi-nam" />
   </component>
   <component name="CreatePatchCommitExecutor">
     <option name="PATCH_PATH" value="" />
@@ -22,16 +22,18 @@
   </component>
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FavoritesManager">
-    <favorites_list name="Kupi-nam" />
+    <favorites_list name="Kupi-nam">
+      <favorite_root url="file://$PROJECT_DIR$/app/models/parser.rb" type="psiFile" klass="com.intellij.ide.projectView.impl.nodes.PsiFileNode" />
+    </favorites_list>
   </component>
   <component name="FileEditorManager">
     <leaf>
       <file leaf-file-name="index.html.erb" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/views/shops/index.html.erb">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="122" column="40" selection-start="4432" selection-end="4432" vertical-scroll-proportion="-21.26923" vertical-offset="1521" max-vertical-offset="2975">
+            <state line="154" column="80" selection-start="6300" selection-end="6300" vertical-scroll-proportion="-74.69231" vertical-offset="676" max-vertical-offset="3009">
               <folding>
-                <element signature="n#style#0;n#div#0;n#div#0;n#!!top" expanded="true" />
+                <element signature="n#style#0;n#span#2;n#div#2;n#div#0;n#!!top" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -40,8 +42,10 @@
       <file leaf-file-name="parsings_controller.rb" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/controllers/parsings_controller.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="46" column="0" selection-start="1479" selection-end="1479" vertical-scroll-proportion="0.0" vertical-offset="629" max-vertical-offset="1241">
-              <folding />
+            <state line="20" column="15" selection-start="637" selection-end="637" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="646">
+              <folding>
+                <element signature="e#624#2243#0" expanded="false" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -49,14 +53,13 @@
       <file leaf-file-name="parser.rb" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/models/parser.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="142" column="4" selection-start="7219" selection-end="7219" vertical-scroll-proportion="-3.6599553" vertical-offset="3132" max-vertical-offset="9775">
+            <state line="492" column="21" selection-start="21965" selection-end="21968" vertical-scroll-proportion="0.6923077" vertical-offset="1221" max-vertical-offset="7565">
               <folding>
-                <element signature="e#652#4120#0" expanded="false" />
-                <element signature="e#13305#15747#0" expanded="false" />
-                <element signature="e#19736#22255#0" expanded="false" />
-                <element signature="e#22258#25720#0" expanded="false" />
-                <element signature="e#25723#27652#0" expanded="false" />
-                <element signature="e#30756#31205#0" expanded="false" />
+                <element signature="e#658#3479#0" expanded="false" />
+                <element signature="e#3483#12506#0" expanded="false" />
+                <element signature="e#12510#15207#0" expanded="false" />
+                <element signature="e#15211#19437#0" expanded="false" />
+                <element signature="e#22187#25884#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -115,7 +118,6 @@
         <option value="$PROJECT_DIR$/db/migrate/20140219050117_create_products.rb" />
         <option value="$PROJECT_DIR$/app/controllers/save_controller.rb" />
         <option value="$PROJECT_DIR$/Gemfile" />
-        <option value="$PROJECT_DIR$/app/models/save.rb" />
         <option value="$PROJECT_DIR$/app/assets/stylesheets/main.scss" />
         <option value="$PROJECT_DIR$/app/assets/stylesheets/application.css" />
         <option value="$PROJECT_DIR$/vendor/assets/javascripts/bootstrap/bootstrap.js" />
@@ -126,6 +128,8 @@
         <option value="$PROJECT_DIR$/app/views/shops/_form.html.erb" />
         <option value="$PROJECT_DIR$/db/migrate/20140217192918_create_catalog_shops.rb" />
         <option value="$PROJECT_DIR$/db/schema.rb" />
+        <option value="$PROJECT_DIR$/db/migrate/20140301091623_add_date_to_catalog_shops.rb" />
+        <option value="$PROJECT_DIR$/app/models/save.rb" />
         <option value="$PROJECT_DIR$/app/controllers/parsings_controller.rb" />
         <option value="$PROJECT_DIR$/app/views/shops/index.html.erb" />
         <option value="$PROJECT_DIR$/app/models/parser.rb" />
@@ -140,10 +144,10 @@
     <option name="CUSTOM_FILTER" />
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="-8" />
-    <option name="y" value="-8" />
-    <option name="width" value="1456" />
-    <option name="height" value="876" />
+    <option name="x" value="359" />
+    <option name="y" value="52" />
+    <option name="width" value="819" />
+    <option name="height" value="681" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -199,8 +203,6 @@
       <sortByType />
     </navigator>
     <panes>
-      <pane id="RailsProjectView" />
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -283,24 +285,6 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="db" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="migrate" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Kupi-nam" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Kupi-nam" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
               <option name="myItemId" value="app" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
@@ -344,46 +328,6 @@
               <option name="myItemId" value="app" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="views" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="layouts" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Kupi-nam" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Kupi-nam" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="app" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Kupi-nam" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Kupi-nam" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="app" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="helpers" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
           </PATH>
           <PATH>
             <PATH_ELEMENT>
@@ -403,33 +347,17 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Kupi-nam" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Kupi-nam" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="app" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="assets" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
         </subPane>
       </pane>
+      <pane id="RailsProjectView" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="recentsLimit" value="5" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="dynamic.classpath" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$USER_HOME$/Downloads/kupinam/kupinam - копия" />
     <property name="RailsGeneratorsPopup.hiddenIncluded" value="false" />
     <property name="FullScreen" value="false" />
     <property name="options.lastSelected" value="database.main" />
@@ -438,6 +366,7 @@
     <property name="options.searchVisible" value="true" />
     <property name="SearchEverywhereHistory" value="`" />
     <property name="LayoutCode.rearrangeEntriesRHTML" value="false" />
+    <property name="LayoutCode.rearrangeEntriesRuby" value="false" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -617,16 +546,16 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1456" height="876" extended-state="6" />
+    <frame x="359" y="52" width="819" height="681" extended-state="0" />
     <editor active="false" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.29301074" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.29363784" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3230563" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.15450644" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.26806834" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24892704" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.17596567" sideWeight="0.4992343" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3467742" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.17522658" sideWeight="0.4992343" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.38545454" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.14954683" sideWeight="0.5007657" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39477977" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32258064" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
@@ -656,9 +585,9 @@
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.14954683" sideWeight="0.4992343" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32952693" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32952693" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
     </layout-to-restore>
   </component>
   <component name="Vcs.Log.UiProperties">
@@ -679,40 +608,33 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="ruby-line">
           <url>file://$PROJECT_DIR$/app/models/parser.rb</url>
-          <line>619</line>
+          <line>677</line>
           <option name="timeStamp" value="229" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="ruby-line">
           <url>file://$PROJECT_DIR$/app/models/parser.rb</url>
-          <line>615</line>
+          <line>673</line>
           <option name="timeStamp" value="230" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="ruby-line">
           <url>file://$PROJECT_DIR$/app/models/parser.rb</url>
-          <line>145</line>
-          <option name="timeStamp" value="266" />
+          <line>22</line>
+          <option name="timeStamp" value="275" />
         </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
         <breakpoints-dialog />
       </breakpoints-dialog>
-      <option name="time" value="267" />
+      <option name="time" value="279" />
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/app/views/shops/index.html.erb">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="132" column="0" selection-start="4360" selection-end="4360" vertical-scroll-proportion="0.0" vertical-offset="2244" max-vertical-offset="2669">
-          <folding>
-            <element signature="n#style#0;n#div#0;n#div#0;n#!!top" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/controllers/parsings_controller.rb">
       <provider selected="true" editor-type-id="text-editor">
         <state line="16" column="0" selection-start="332" selection-end="332" vertical-scroll-proportion="0.0" vertical-offset="147" max-vertical-offset="901">
-          <folding />
+          <folding>
+            <element signature="e#624#2243#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -727,12 +649,11 @@
       <provider selected="true" editor-type-id="text-editor">
         <state line="18" column="5" selection-start="489" selection-end="489" vertical-scroll-proportion="0.0" vertical-offset="714" max-vertical-offset="15028">
           <folding>
-            <element signature="e#652#4120#0" expanded="false" />
-            <element signature="e#13305#15747#0" expanded="false" />
-            <element signature="e#19736#22255#0" expanded="false" />
-            <element signature="e#22258#25720#0" expanded="false" />
-            <element signature="e#25723#27652#0" expanded="false" />
-            <element signature="e#30756#31205#0" expanded="false" />
+            <element signature="e#658#3479#0" expanded="false" />
+            <element signature="e#3483#12506#0" expanded="false" />
+            <element signature="e#12510#15207#0" expanded="false" />
+            <element signature="e#15211#19437#0" expanded="false" />
+            <element signature="e#22187#25884#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -741,7 +662,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state line="85" column="0" selection-start="2724" selection-end="2724" vertical-scroll-proportion="0.0" vertical-offset="1445" max-vertical-offset="1547">
           <folding>
-            <element signature="n#style#0;n#div#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#span#2;n#div#2;n#div#0;n#!!top" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -749,7 +670,9 @@
     <entry file="file://$PROJECT_DIR$/app/controllers/parsings_controller.rb">
       <provider selected="true" editor-type-id="text-editor">
         <state line="37" column="0" selection-start="1006" selection-end="1006" vertical-scroll-proportion="0.0" vertical-offset="629" max-vertical-offset="731">
-          <folding />
+          <folding>
+            <element signature="e#624#2243#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -757,12 +680,11 @@
       <provider selected="true" editor-type-id="text-editor">
         <state line="18" column="5" selection-start="489" selection-end="489" vertical-scroll-proportion="0.0" vertical-offset="306" max-vertical-offset="15028">
           <folding>
-            <element signature="e#652#4120#0" expanded="false" />
-            <element signature="e#13305#15747#0" expanded="false" />
-            <element signature="e#19736#22255#0" expanded="false" />
-            <element signature="e#22258#25720#0" expanded="false" />
-            <element signature="e#25723#27652#0" expanded="false" />
-            <element signature="e#30756#31205#0" expanded="false" />
+            <element signature="e#658#3479#0" expanded="false" />
+            <element signature="e#3483#12506#0" expanded="false" />
+            <element signature="e#12510#15207#0" expanded="false" />
+            <element signature="e#15211#19437#0" expanded="false" />
+            <element signature="e#22187#25884#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -771,7 +693,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state line="58" column="51" selection-start="1652" selection-end="1652" vertical-scroll-proportion="0.0" vertical-offset="986" max-vertical-offset="1326">
           <folding>
-            <element signature="n#style#0;n#div#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#span#2;n#div#2;n#div#0;n#!!top" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -786,7 +708,9 @@
     <entry file="file://$PROJECT_DIR$/app/controllers/parsings_controller.rb">
       <provider selected="true" editor-type-id="text-editor">
         <state line="18" column="12" selection-start="405" selection-end="405" vertical-scroll-proportion="0.0" vertical-offset="306" max-vertical-offset="680">
-          <folding />
+          <folding>
+            <element signature="e#624#2243#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -794,12 +718,11 @@
       <provider selected="true" editor-type-id="text-editor">
         <state line="641" column="28" selection-start="27606" selection-end="27606" vertical-scroll-proportion="0.0" vertical-offset="10897" max-vertical-offset="13192">
           <folding>
-            <element signature="e#652#4120#0" expanded="false" />
-            <element signature="e#13305#15747#0" expanded="false" />
-            <element signature="e#19736#22255#0" expanded="false" />
-            <element signature="e#22258#25720#0" expanded="false" />
-            <element signature="e#25723#27652#0" expanded="false" />
-            <element signature="e#30756#31205#0" expanded="false" />
+            <element signature="e#658#3479#0" expanded="false" />
+            <element signature="e#3483#12506#0" expanded="false" />
+            <element signature="e#12510#15207#0" expanded="false" />
+            <element signature="e#15211#19437#0" expanded="false" />
+            <element signature="e#22187#25884#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -808,7 +731,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state line="22" column="5" selection-start="700" selection-end="700" vertical-scroll-proportion="0.0" vertical-offset="374" max-vertical-offset="476">
           <folding>
-            <element signature="n#style#0;n#div#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#span#2;n#div#2;n#div#0;n#!!top" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -884,13 +807,6 @@
         <state line="6" column="0" selection-start="141" selection-end="141" vertical-scroll-proportion="0.25185186" vertical-offset="0" max-vertical-offset="405" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/db/migrate/20140219050117_create_products.rb">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="11" column="23" selection-start="316" selection-end="316" vertical-scroll-proportion="0.3617021" vertical-offset="0" max-vertical-offset="517">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$APPLICATION_HOME_DIR$/rubystubs20/string.rb">
       <provider selected="true" editor-type-id="text-editor">
         <state line="886" column="8" selection-start="36802" selection-end="36802" vertical-scroll-proportion="0.33174226" vertical-offset="14923" max-vertical-offset="30532" />
@@ -904,16 +820,6 @@
     <entry file="file://C:/Ruby200/lib/ruby/gems/2.0.0/gems/mechanize-2.7.2/lib/mechanize/page.rb">
       <provider selected="true" editor-type-id="text-editor">
         <state line="110" column="0" selection-start="2718" selection-end="2718" vertical-scroll-proportion="0.33174226" vertical-offset="1731" max-vertical-offset="8636" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/controllers/save_controller.rb">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="4" column="0" selection-start="111" selection-end="111" vertical-scroll-proportion="0.11584327" vertical-offset="0" max-vertical-offset="587" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/models/save.rb">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="114" column="45" selection-start="4273" selection-end="4273" vertical-scroll-proportion="1.7839721" vertical-offset="914" max-vertical-offset="2567" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/controllers/shops_controller.rb">
@@ -977,23 +883,54 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/db/schema.rb">
+    <entry file="file://C:/Ruby200/lib/ruby/2.0.0/webrick/server.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="20" column="35" selection-start="984" selection-end="984" vertical-scroll-proportion="0.484" vertical-offset="98" max-vertical-offset="1513">
-          <folding />
-        </state>
+        <state line="168" column="0" selection-start="4137" selection-end="4137" vertical-scroll-proportion="0.3326087" vertical-offset="2703" max-vertical-offset="5627" />
+      </provider>
+    </entry>
+    <entry file="file://C:/Ruby200/lib/ruby/2.0.0/webrick/utils.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="179" column="0" selection-start="4691" selection-end="4691" vertical-scroll-proportion="0.3326087" vertical-offset="2890" max-vertical-offset="4284" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/db/migrate/20140217192918_create_catalog_shops.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="5" column="25" selection-start="151" selection-end="209" vertical-scroll-proportion="0.17" vertical-offset="0" max-vertical-offset="500">
+        <state line="8" column="0" selection-start="248" selection-end="248" vertical-scroll-proportion="0.23089983" vertical-offset="0" max-vertical-offset="589">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="dbDummy://dbtable:/b23318cc/cf355945-0150-4c2d-9243-e5cabd3ca7f1/kupi_name..catalog_shops">
+    <entry file="file://$PROJECT_DIR$/db/migrate/20140301091623_add_date_to_catalog_shops.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="3" column="61" selection-start="181" selection-end="181" vertical-scroll-proportion="0.13212435" vertical-offset="0" max-vertical-offset="386">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/db/migrate/20140219050117_create_products.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="11" column="23" selection-start="316" selection-end="316" vertical-scroll-proportion="0.49866667" vertical-offset="0" max-vertical-offset="459">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/db/schema.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="32" column="0" selection-start="1294" selection-end="1294" vertical-scroll-proportion="0.90933335" vertical-offset="203" max-vertical-offset="1564">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/controllers/save_controller.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="4" column="0" selection-start="111" selection-end="111" vertical-scroll-proportion="0.11584327" vertical-offset="0" max-vertical-offset="587">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="dbDummy://dbtable:/ce27fe8d/cf355945-0150-4c2d-9243-e5cabd3ca7f1/kupi_name..products">
       <provider editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="-0.0" vertical-offset="0" max-vertical-offset="255">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="100">
           <folding />
         </state>
       </provider>
@@ -1001,46 +938,50 @@
         <state />
       </provider>
     </entry>
-    <entry file="file://C:/Ruby200/lib/ruby/2.0.0/webrick/server.rb">
+    <entry file="file://$PROJECT_DIR$/app/models/save.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="168" column="0" selection-start="4137" selection-end="4137" vertical-scroll-proportion="0.3326087" vertical-offset="2703" max-vertical-offset="5627">
+        <state line="119" column="27" selection-start="4464" selection-end="4464" vertical-scroll-proportion="1.2810903" vertical-offset="1271" max-vertical-offset="2635">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://C:/Ruby200/lib/ruby/2.0.0/webrick/utils.rb">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="179" column="0" selection-start="4691" selection-end="4691" vertical-scroll-proportion="0.3326087" vertical-offset="2890" max-vertical-offset="4284">
+    <entry file="dbDummy://dbtable:/ce27fe8d/cf355945-0150-4c2d-9243-e5cabd3ca7f1/kupi_name..catalog_shops">
+      <provider editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="100">
           <folding />
         </state>
+      </provider>
+      <provider selected="true" editor-type-id="com.intellij.persistence.database.editor.DatabaseTableFileEditorProvider">
+        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/views/shops/index.html.erb">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="122" column="40" selection-start="4432" selection-end="4432" vertical-scroll-proportion="-21.26923" vertical-offset="1521" max-vertical-offset="2975">
+        <state line="154" column="80" selection-start="6300" selection-end="6300" vertical-scroll-proportion="-74.69231" vertical-offset="676" max-vertical-offset="3009">
           <folding>
-            <element signature="n#style#0;n#div#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#span#2;n#div#2;n#div#0;n#!!top" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/controllers/parsings_controller.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="46" column="0" selection-start="1479" selection-end="1479" vertical-scroll-proportion="0.0" vertical-offset="629" max-vertical-offset="1241">
-          <folding />
+        <state line="20" column="15" selection-start="637" selection-end="637" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="646">
+          <folding>
+            <element signature="e#624#2243#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/models/parser.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="142" column="4" selection-start="7219" selection-end="7219" vertical-scroll-proportion="-3.6599553" vertical-offset="3132" max-vertical-offset="9775">
+        <state line="492" column="21" selection-start="21965" selection-end="21968" vertical-scroll-proportion="0.6923077" vertical-offset="1221" max-vertical-offset="7565">
           <folding>
-            <element signature="e#652#4120#0" expanded="false" />
-            <element signature="e#13305#15747#0" expanded="false" />
-            <element signature="e#19736#22255#0" expanded="false" />
-            <element signature="e#22258#25720#0" expanded="false" />
-            <element signature="e#25723#27652#0" expanded="false" />
-            <element signature="e#30756#31205#0" expanded="false" />
+            <element signature="e#658#3479#0" expanded="false" />
+            <element signature="e#3483#12506#0" expanded="false" />
+            <element signature="e#12510#15207#0" expanded="false" />
+            <element signature="e#15211#19437#0" expanded="false" />
+            <element signature="e#22187#25884#0" expanded="false" />
           </folding>
         </state>
       </provider>

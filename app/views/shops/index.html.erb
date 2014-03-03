@@ -152,6 +152,8 @@
                 <div class="list_cat none">
                   <input type="checkbox" data-shop-id="<%= shop.id %>" name="checkbox[]" value="<%= cat.id %>" checked="checked"/><%= cat.title %>
                   <span class="label label-primary"><%= cat.products.size %></span>
+                  <span>Время скачки: <%= cat.time_download.strftime "%T" unless cat.time_download.nil?%></span>
+                  <span>Дата: <%= cat.date_last_download %></span>
                 </div>
             <% end %>
             <div class="clearfix"></div>

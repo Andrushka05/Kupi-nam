@@ -103,10 +103,12 @@ class Save
       worksheet.write(count_row,count_column,p.article,format2)
       count_column+=1
       if count_price>0
+        beg_pr=count_column
         p.prices.map{|price|
         worksheet.write(count_row,count_column,price.cost,format2)
         count_column+=1
-      }
+        }
+        count_column=beg_pr+count_price if count_column-count_price!=beg_pr
       end
       worksheet.write(count_row,count_column,p.client_prices,format2)
       count_column+=1
@@ -115,10 +117,12 @@ class Save
       worksheet.write(count_row,count_column,p.size,format2)
       #ext prop
       if count_ext_prop>0
+        beg_pr=count_column
         p.ext_props.map{|ext|
           worksheet.write(count_row,count_column,ext.value,format2)
           count_column+=1
         }
+        count_column=beg_pr+count_ext_prop if count_column-count_ext_prop!=beg_pr
       end
       count_column+=1
       worksheet.write(count_row,count_column,p.description,format2)
