@@ -84,7 +84,7 @@ class Parser
       }
       endTime=Time.now-beginTime
       @c=CatalogShop.where(:id => catalog.id).first
-      @c.time_download=endTime
+      @c.time_download=Time.new(endTime.to_i)
       @c.date_last_download=DateTime.now
       @c.save
     }
@@ -265,7 +265,7 @@ class Parser
       }
       endTime=Time.now-beginTime
       @c=CatalogShop.where(:id => catalog.id).first
-      @c.time_download=endTime
+      @c.time_download=Time.new(endTime.to_i)
       @c.date_last_download=DateTime.now
       @c.save
     }
@@ -330,7 +330,7 @@ class Parser
       }
       endTime=Time.now-beginTime
       @c=CatalogShop.where(:id => catalog.id).first
-      @c.time_download=endTime
+      @c.time_download=Time.new(endTime.to_i)
       @c.date_last_download=DateTime.now
       @c.save
     }
@@ -369,7 +369,7 @@ class Parser
               @goods.catalog_shop_id=catalog.id
             end
 
-            @goods.title=get_node_text(pp2.parser, "//h1[contains(concat(' ', @class, ' '), 'item_name')]").gsub("Товар:", "").strip
+            @goods.title=get_node_text(pp2.parser, "//h1[contains(concat(' ', @class, ' '), 'item_name')]").gsub("Товар:", "").strip.mb_chars.capitalize
             desc=[]
             pp2.parser.xpath("//div[contains(concat(' ', @class, ' '), 'content')]").map { |x|
               temp=x.to_s.split("<br>")
@@ -399,7 +399,7 @@ class Parser
                 Photo.where(:product_id => @goods.id, :url => url).first_or_create
               end
             }
-            @goods.category_path=get_nodes_a(pp2.parser, "//div[contains(concat(' ', @id, ' '), 'breadcrumbs')]/a", ["Mix-Mode", "Оптовый интернет магазин"]).join("/")
+            @goods.category_path=get_nodes_a(pp2.parser, "//div[contains(concat(' ', @id, ' '), 'breadcrumbs')]/a", ["Mix-Mode", "Оптовый интернет магазин"]).join("/").mb_chars.capitalize
             size=get_nodes_a(pp2.parser, "//table[contains(concat(' ', @id, ' '), 'sizes')]/tr[1]/td", ["Размер"])
 
             prices=get_nodes_a(pp2.parser, "//table[contains(concat(' ', @id, ' '), 'sizes')]/tr[2]/td", ['Оптовая'], ['руб.'], [], false)
@@ -413,7 +413,7 @@ class Parser
                 else
                   @goodsNew=@gs.where(:size => size[i]).first_or_create
                   @goodsNew.article=@goods.article
-                  @goodsNew.size=size[i]
+                  @goodsNew.size=size[i].strip
                   id=@goodsNew.id
                   @goodsNew.save
                 end
@@ -426,7 +426,7 @@ class Parser
               @price=Price.where(:product_id => @goods.id)
               @new=@price.where(:cost => pric.gsub('руб.', '').to_f).first_or_create
               @new.save
-              @goods.size=size.join("; ")
+              @goods.size=size.join("; ").strip
               @goods.state="no_sale"
               @goods.save
             end
@@ -435,7 +435,7 @@ class Parser
       }
       endTime=Time.now-beginTime
       @c=CatalogShop.where(:id => catalog.id).first
-      @c.time_download=endTime
+      @c.time_download=Time.new(endTime.to_i)
       @c.date_last_download=DateTime.now
       @c.save
     }
@@ -454,16 +454,16 @@ class Parser
     mechan.get(@shop.url)
     catalogs.map { |catalog|
       beginTime=Time.now
+      begin
       mechan.get(catalog.url+"?product_items_per_page=48") { |p|
 
-        page = Nokogiri::HTML(p.body, nil, encoding) #+"?characteristics%5B%5D=1290270&page_size=100"
-        page.remove_namespaces!
         catalog_title=catalog.title
 
         links=get_links_pages_all(p.parser, "//a[contains(concat(' ', @id, ' '), 'link_to_product')]", "//a[contains(concat(' ', @class, ' '), 'b-pager__link')][last()-1]", @shop.host, "page_")
         links=links.compact.uniq
         #get full info goods
         links.each { |link|
+          begin
           mechan.get(link) { |pp2|
 
             @goods=@shop.products.where(url: link).first_or_create
@@ -488,16 +488,24 @@ class Parser
                 Photo.where(:product_id => @goods.id, :url => x).first_or_create
               end
             }
-            @goods.category_path=get_node_texts_s(pp2.parser, "//div[contains(concat(' ', @class, ' '), 'bread_crumb_big')]/a", "/", ['Prom.ua', 'Одесса›Интернет-магазин "YULIA"', 'Ассортимент моделей'])
+            @goods.category_path=get_node_texts_s(pp2.parser, "//a[contains(concat(' ', @class, ' '), 'b-breadcrumb__link ')]", "/",['Prom.ua', 'Одесса','Интернет-магазин "YULIA"', 'Ассортимент моделей'])
             @goods.save
-            sleep(3.5)
-
+            #sleep(1.5)
           }
+          rescue Timeout::Error
+            puts "Timeout!"
+          rescue Net::HTTPNotFound
+            puts '404!'
+          end
         }
+
       }
+      rescue Net::HTTPNotFound
+        puts '404!'
+      end
       endTime=Time.now-beginTime
       @c=CatalogShop.where(:id => catalog.id).first
-      @c.time_download=endTime
+      @c.time_download=Time.new(endTime.to_i)
       @c.date_last_download=DateTime.now
       @c.save
     }
@@ -594,7 +602,7 @@ class Parser
       }
       endTime=Time.now-beginTime
       @c=CatalogShop.where(:id => catalog.id).first
-      @c.time_download=endTime
+      @c.time_download=Time.new(endTime.to_i)
       @c.date_last_download=DateTime.now
       @c.save
     }
@@ -646,7 +654,7 @@ class Parser
       }
       endTime=Time.now-beginTime
       @c=CatalogShop.where(:id => catalog.id).first
-      @c.time_download=Time.new(endTime)
+      @c.time_download=Time.new(endTime.to_i)
       @c.date_last_download=DateTime.now
       @c.save
     }
@@ -669,6 +677,7 @@ class Parser
     mechan.get(@shop.url)
     catalogs.map { |catalog|
       beginTime=Time.now
+      begin
       mechan.get(catalog.url+"?page=all") { |p|
         page = Nokogiri::HTML(p.body, nil, encoding) #+"?characteristics%5B%5D=1290270&page_size=100"
         page.remove_namespaces!
@@ -718,9 +727,12 @@ class Parser
           }
         }
       }
+      rescue Net::HTTPNotFound
+       puts '404!'
+      end
       endTime=Time.now-beginTime
       @c=CatalogShop.where(:id => catalog.id).first
-      @c.time_download=endTime.duration
+      @c.time_download=Time.new(endTime.to_i)
       @c.date_last_download=DateTime.now
       @c.save
     }

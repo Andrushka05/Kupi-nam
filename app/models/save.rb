@@ -48,34 +48,28 @@ class Save
     worksheet.write(0,count_column,'title',format2)
     worksheet.write(1,count_column,'Название',format)
     count_column+=1
-    worksheet.write(0,count_column,'article2',format2)
-    worksheet.write(1,count_column,'Артикул',format)
-    count_column+=1
     worksheet.write(0,count_column,'article',format2)
-    worksheet.write(1,count_column,'Артикул поставщика (необязательно)',format)
+    worksheet.write(1,count_column,'Артикул',format)
     count_column+=1
     count_price.times{|i|
       worksheet.write(0,count_column,'prices'+i.to_s,format2)
       worksheet.write(1,count_column,'Оптовая цена '+i.to_s,format)
       count_column+=1
     }
-    worksheet.write(0,count_column,'client_price',format2)
-    worksheet.write(1,count_column,'Цена c орг. сбором',format)
+    worksheet.write(0,count_column,'size',format2)
+    worksheet.write(1,count_column,'Размер',format)
     count_column+=1
     worksheet.write(0,count_column,'color',format2)
     worksheet.write(1,count_column,'Цвет',format)
     count_column+=1
-    worksheet.write(0,count_column,'size',format2)
-    worksheet.write(1,count_column,'Размер',format)
     #ext prop
     if count_ext_prop>0
       count_ext_prop.times{|i|
-        worksheet.write(0,count_column,'props'+i,format2)
+        worksheet.write(0,count_column,'option'+i,format2)
         worksheet.write(1,count_column,'Свойство'+i,format)
         count_column+=1
       }
     end
-    count_column+=1
     worksheet.write(0,count_column,'description',format2)
     worksheet.write(1,count_column,'Описание',format)
     count_column+=1
@@ -84,7 +78,7 @@ class Save
     count_column+=1
     #photos
     count_photo.times{|i|
-      worksheet.write(0,count_column,'photos'+i.to_s,format2)
+      worksheet.write(0,count_column,'images'+i.to_s,format2)
       worksheet.write(1,count_column,'Фото '+i.to_s,format)
       count_column+=1
     }
@@ -98,8 +92,6 @@ class Save
       count_column+=1
       worksheet.write(count_row,count_column,p.title,format2)
       count_column+=1
-      worksheet.write(count_row,count_column,p.article2,format2)
-      count_column+=1
       worksheet.write(count_row,count_column,p.article,format2)
       count_column+=1
       if count_price>0
@@ -110,11 +102,11 @@ class Save
         }
         count_column=beg_pr+count_price if count_column-count_price!=beg_pr
       end
-      worksheet.write(count_row,count_column,p.client_prices,format2)
+      worksheet.write(count_row,count_column,p.size,format2)
       count_column+=1
       worksheet.write(count_row,count_column,p.color,format2)
       count_column+=1
-      worksheet.write(count_row,count_column,p.size,format2)
+
       #ext prop
       if count_ext_prop>0
         beg_pr=count_column
@@ -124,7 +116,6 @@ class Save
         }
         count_column=beg_pr+count_ext_prop if count_column-count_ext_prop!=beg_pr
       end
-      count_column+=1
       worksheet.write(count_row,count_column,p.description,format2)
       count_column+=1
       worksheet.write(count_row,count_column,p.url,format2)
